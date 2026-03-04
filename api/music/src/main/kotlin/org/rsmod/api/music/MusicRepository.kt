@@ -65,7 +65,7 @@ constructor(private val random: GameRandom, private val dbTables: DbTableResolve
             val midi = row[music_columns.midi]
             val variable = row[music_columns.variable]
             val duration = row[music_columns.duration]
-            val hidden = row[music_columns.hidden]
+            val hidden = row.getOrNull(music_columns.hidden)?.let { it != 0 } ?: false
             val secondary = row.getOrNull(music_columns.secondary_track)
             val unlockVarp = unlockVarps.getOrNull(variable.varpIndex - 1)
             val music =

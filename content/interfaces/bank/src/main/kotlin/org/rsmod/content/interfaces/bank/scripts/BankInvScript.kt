@@ -102,8 +102,46 @@ constructor(
         onIfModalDrag(bank_components.worn_inventory) { dragSideInv(it) }
         onIfModalDrag(bank_components.main_inventory, bank_components.tabs) { dragIntoTab(it) }
 
+        val reservedButtonPackedIds =
+            setOf(
+                bank_components.side_inventory.packed,
+                bank_components.main_inventory.packed,
+                bank_components.worn_inventory.packed,
+                bank_components.deposit_inventory.packed,
+                bank_components.deposit_worn.packed,
+                bank_components.tabs.packed,
+                bank_components.incinerator_confirm.packed,
+                bank_components.rearrange_mode_swap.packed,
+                bank_components.rearrange_mode_insert.packed,
+                bank_components.withdraw_mode_item.packed,
+                bank_components.withdraw_mode_note.packed,
+                bank_components.always_placehold.packed,
+                bank_components.quantity_1.packed,
+                bank_components.quantity_5.packed,
+                bank_components.quantity_10.packed,
+                bank_components.quantity_all.packed,
+                bank_components.quantity_x.packed,
+                bank_components.bank_tab_display.packed,
+                bank_components.incinerator_toggle.packed,
+                bank_components.tutorial_button_toggle.packed,
+                bank_components.inventory_item_options_toggle.packed,
+                bank_components.deposit_inv_toggle.packed,
+                bank_components.deposit_worn_toggle.packed,
+                bank_components.release_placehold.packed,
+                bank_components.bank_fillers_1.packed,
+                bank_components.bank_fillers_10.packed,
+                bank_components.bank_fillers_50.packed,
+                bank_components.bank_fillers_x.packed,
+                bank_components.bank_fillers_all.packed,
+                bank_components.bank_fillers_fill.packed,
+            )
+        val registeredWornPackedIds = mutableSetOf<Int>()
         val wornComponents = enumResolver[bank_enums.worn_component_map].filterValuesNotNull()
         for ((slot, component) in wornComponents) {
+            val packed = component.packed
+            if (packed in reservedButtonPackedIds || !registeredWornPackedIds.add(packed)) {
+                continue
+            }
             onIfModalButton(component) { wornOp(slot, it.op) }
         }
 

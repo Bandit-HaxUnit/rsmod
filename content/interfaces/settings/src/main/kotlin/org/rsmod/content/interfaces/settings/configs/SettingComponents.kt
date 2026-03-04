@@ -6,6 +6,13 @@ typealias setting_components = SettingComponents
 
 object SettingComponents : ComponentReferences() {
     val runbutton_orb = find("orbs:runbutton")
+    val runbutton_orb_nomap = find("orbs_nomap:runbutton")
+    val runbutton_orb_osm = find("orbs_osm:runbutton")
+    val runbutton_orb_osm_nomap = find("orbs_osm_nomap:runbutton")
+    val worldmap_orb = find("orbs:worldmap")
+    val worldmap_orb_nomap = find("orbs_nomap:worldmap")
+    val worldmap_orb_osm = find("orbs_osm:worldmap")
+    val worldmap_orb_osm_nomap = find("orbs_osm_nomap:worldmap")
     val runmode = find("settings_side:runmode")
 
     val settings_tab = find("settings_side:settings_tab")

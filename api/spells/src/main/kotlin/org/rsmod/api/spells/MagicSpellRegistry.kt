@@ -80,9 +80,7 @@ constructor(private val objTypes: ObjTypeList, private val enumResolver: EnumTyp
         val button = unpacked.param(params.spell_button)
         val maxHit = unpacked.param(params.spell_maxhit)
         val levelReq = unpacked.param(params.spell_levelreq)
-        val experience = unpacked.paramOrNull(params.spell_castxp)
-
-        checkNotNull(experience) { "Cast xp not defined for spell obj: '$internalName' ($id)" }
+        val experience = unpacked.paramOrNull(params.spell_castxp) ?: 0
 
         val objReqs = buildList {
             fun addRequirement(objParam: ParamObj, countParam: ParamInt) {

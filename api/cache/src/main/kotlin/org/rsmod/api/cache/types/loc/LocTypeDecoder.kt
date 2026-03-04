@@ -104,6 +104,10 @@ public object LocTypeDecoder {
                         else -> throw NotImplementedError("Unhandled .loc config code.")
                     }
                 }
+                60 -> {
+                    // Reserved/legacy map area id in newer cache revs.
+                    data.readUnsignedShort()
+                }
                 61 -> category = data.readUnsignedShort()
                 62 -> mirror = true
                 64 -> shadow = false
@@ -154,6 +158,25 @@ public object LocTypeDecoder {
                 82 -> mapIcon = data.readUnsignedShort()
                 89 -> randomAnimFrame = false
                 90 -> fixLocAnimAfterLocChange = true
+                91 -> {
+                    // Sound distance fade curve (currently not modeled in `LocType`).
+                    data.readUnsignedByte()
+                }
+                93 -> {
+                    // Sound fade config (currently not modeled in `LocType`).
+                    data.readUnsignedByte()
+                    data.readUnsignedShort()
+                    data.readUnsignedByte()
+                    data.readUnsignedShort()
+                }
+                95 -> {
+                    // Sound visibility (currently not modeled in `LocType`).
+                    data.readUnsignedByte()
+                }
+                96 -> {
+                    // Additional raise/sound config in newer cache revs.
+                    data.readUnsignedByte()
+                }
                 200 -> contentGroup = data.readUnsignedShort()
                 249 -> paramMap = ParamMap(data.readRawParams())
                 else -> throw IOException("Error unrecognised .loc config code: $code")

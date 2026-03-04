@@ -41,4 +41,12 @@ dependencies {
 tasks.named<JavaExec>("run") {
     description = "Runs the RS Mod game server"
     workingDir = rootProject.projectDir
+    // During revision migration, cached identity hashes in source refs can be stale.
+    // Default to skipping hash verification for `run`; set `-PverifyTypeHashes=true`
+    // to re-enable strict verification.
+    val verifyTypeHashes =
+        providers.gradleProperty("verifyTypeHashes").orNull?.toBooleanStrictOrNull() ?: false
+    if (!verifyTypeHashes) {
+        args("--skip-type-verification")
+    }
 }

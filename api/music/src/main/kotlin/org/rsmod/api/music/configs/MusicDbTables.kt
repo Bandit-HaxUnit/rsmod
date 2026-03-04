@@ -17,8 +17,8 @@ internal object MusicDbColumns : DbColumnReferences() {
     val duration = int("music:duration")
     val midi = midi("music:midi")
     val variable = value("music:variable", VariableCodec)
-    val hidden = boolean("music:hidden")
-    val secondary_track = dbRow("music:secondary_track")
+    val hidden = int("music:hidden")
+    val secondary_track = int("music:secondary_track")
 }
 
 internal object MusicDbTables : DbTableReferences() {

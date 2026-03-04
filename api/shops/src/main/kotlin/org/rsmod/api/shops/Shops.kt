@@ -7,7 +7,6 @@ import org.rsmod.api.player.output.ClientScripts.shopMainInit
 import org.rsmod.api.player.startInvTransmit
 import org.rsmod.api.player.ui.ifOpenMainSidePair
 import org.rsmod.api.player.ui.ifSetEvents
-import org.rsmod.api.player.ui.ifSetText
 import org.rsmod.api.shops.config.ShopComponents
 import org.rsmod.api.shops.config.ShopInterfaces
 import org.rsmod.api.shops.config.ShopParams
@@ -96,7 +95,6 @@ constructor(private val invTypes: InvTypeList, private val eventBus: EventBus) {
             transparency = -1,
             eventBus = eventBus,
         )
-        player.ifSetText(ShopComponents.shop_subtext, subtext)
         shopMainInit(player, shopInv.type, title)
 
         player.ifSetEvents(

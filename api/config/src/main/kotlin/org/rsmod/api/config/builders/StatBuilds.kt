@@ -27,7 +27,7 @@ internal object StatBuilds : StatBuilder() {
         build("runecrafting")
         build("hunter")
         build("construction")
-        build("sailing") { unreleased = true }
+        build("sailing")
         build("unreleased") { unreleased = true }
     }
 }

@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="9978b840-f1ec-4b76-a344-b2da41a637e0" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/runConfigurations/GameServer.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/runConfigurations/GameServer.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/cache/src/main/kotlin/org/rsmod/api/cache/types/loc/LocTypeDecoder.kt" beforeDir="false" afterPath="$PROJECT_DIR$/api/cache/src/main/kotlin/org/rsmod/api/cache/types/loc/LocTypeDecoder.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/cache/src/main/kotlin/org/rsmod/api/cache/types/npc/NpcTypeDecoder.kt" beforeDir="false" afterPath="$PROJECT_DIR$/api/cache/src/main/kotlin/org/rsmod/api/cache/types/npc/NpcTypeDecoder.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/cache/src/main/kotlin/org/rsmod/api/cache/types/seq/SeqTypeDecoder.kt" beforeDir="false" afterPath="$PROJECT_DIR$/api/cache/src/main/kotlin/org/rsmod/api/cache/types/seq/SeqTypeDecoder.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/config/src/main/kotlin/org/rsmod/api/config/builders/StatBuilds.kt" beforeDir="false" afterPath="$PROJECT_DIR$/api/config/src/main/kotlin/org/rsmod/api/config/builders/StatBuilds.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/core/src/main/kotlin/org/rsmod/api/core/Build.kt" beforeDir="false" afterPath="$PROJECT_DIR$/api/core/src/main/kotlin/org/rsmod/api/core/Build.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/game-process/src/main/kotlin/org/rsmod/api/game/process/player/PlayerZoneUpdateProcessor.kt" beforeDir="false" afterPath="$PROJECT_DIR$/api/game-process/src/main/kotlin/org/rsmod/api/game/process/player/PlayerZoneUpdateProcessor.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/music/src/main/kotlin/org/rsmod/api/music/Music.kt" beforeDir="false" afterPath="$PROJECT_DIR$/api/music/src/main/kotlin/org/rsmod/api/music/Music.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/music/src/main/kotlin/org/rsmod/api/music/MusicRepository.kt" beforeDir="false" afterPath="$PROJECT_DIR$/api/music/src/main/kotlin/org/rsmod/api/music/MusicRepository.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/music/src/main/kotlin/org/rsmod/api/music/configs/MusicDbTables.kt" beforeDir="false" afterPath="$PROJECT_DIR$/api/music/src/main/kotlin/org/rsmod/api/music/configs/MusicDbTables.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/net/src/main/kotlin/org/rsmod/api/net/rsprot/NetworkScript.kt" beforeDir="false" afterPath="$PROJECT_DIR$/api/net/src/main/kotlin/org/rsmod/api/net/rsprot/NetworkScript.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/net/src/main/kotlin/org/rsmod/api/net/rsprot/RspClient.kt" beforeDir="false" afterPath="$PROJECT_DIR$/api/net/src/main/kotlin/org/rsmod/api/net/rsprot/RspClient.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/net/src/main/kotlin/org/rsmod/api/net/rsprot/RspCycle.kt" beforeDir="false" afterPath="$PROJECT_DIR$/api/net/src/main/kotlin/org/rsmod/api/net/rsprot/RspCycle.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/shops/src/main/kotlin/org/rsmod/api/shops/ShopScript.kt" beforeDir="false" afterPath="$PROJECT_DIR$/api/shops/src/main/kotlin/org/rsmod/api/shops/ShopScript.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/shops/src/main/kotlin/org/rsmod/api/shops/Shops.kt" beforeDir="false" afterPath="$PROJECT_DIR$/api/shops/src/main/kotlin/org/rsmod/api/shops/Shops.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/shops/src/main/kotlin/org/rsmod/api/shops/config/ShopConfigs.kt" beforeDir="false" afterPath="$PROJECT_DIR$/api/shops/src/main/kotlin/org/rsmod/api/shops/config/ShopConfigs.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/spells/src/main/kotlin/org/rsmod/api/spells/MagicSpellRegistry.kt" beforeDir="false" afterPath="$PROJECT_DIR$/api/spells/src/main/kotlin/org/rsmod/api/spells/MagicSpellRegistry.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/utils/utils-zone/src/main/kotlin/org/rsmod/api/utils/zone/SharedZoneEnclosedBuffers.kt" beforeDir="false" afterPath="$PROJECT_DIR$/api/utils/utils-zone/src/main/kotlin/org/rsmod/api/utils/zone/SharedZoneEnclosedBuffers.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/content/interfaces/bank/src/main/kotlin/org/rsmod/content/interfaces/bank/scripts/BankInvScript.kt" beforeDir="false" afterPath="$PROJECT_DIR$/content/interfaces/bank/src/main/kotlin/org/rsmod/content/interfaces/bank/scripts/BankInvScript.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/content/interfaces/settings/src/main/kotlin/org/rsmod/content/interfaces/settings/configs/SettingComponents.kt" beforeDir="false" afterPath="$PROJECT_DIR$/content/interfaces/settings/src/main/kotlin/org/rsmod/content/interfaces/settings/configs/SettingComponents.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/content/interfaces/settings/src/main/kotlin/org/rsmod/content/interfaces/settings/scripts/RunModeScript.kt" beforeDir="false" afterPath="$PROJECT_DIR$/content/interfaces/settings/src/main/kotlin/org/rsmod/content/interfaces/settings/scripts/RunModeScript.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/content/interfaces/skill-guides/src/main/kotlin/org/rsmod/content/interfaces/skill/guides/SkillGuideScript.kt" beforeDir="false" afterPath="$PROJECT_DIR$/content/interfaces/skill-guides/src/main/kotlin/org/rsmod/content/interfaces/skill/guides/SkillGuideScript.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/content/other/commands/src/main/kotlin/org/rsmod/content/other/commands/AdminCommands.kt" beforeDir="false" afterPath="$PROJECT_DIR$/content/other/commands/src/main/kotlin/org/rsmod/content/other/commands/AdminCommands.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/game/src/main/kotlin/org/rsmod/game/type/literal/CacheVarCodec.kt" beforeDir="false" afterPath="$PROJECT_DIR$/engine/game/src/main/kotlin/org/rsmod/game/type/literal/CacheVarCodec.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/game/src/main/kotlin/org/rsmod/game/type/stat/StatTypeBuilder.kt" beforeDir="false" afterPath="$PROJECT_DIR$/engine/game/src/main/kotlin/org/rsmod/game/type/stat/StatTypeBuilder.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gradle/libs.versions.toml" beforeDir="false" afterPath="$PROJECT_DIR$/gradle/libs.versions.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/app/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/server/app/build.gradle.kts" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="EmbeddingIndexingInfo">
+    <option name="cachedIndexableFilesCount" value="2519" />
+  </component>
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$">
+      <ProjectState />
+    </projectState>
+  </component>
+  <component name="ExternalProjectsManager">
+    <system id="GRADLE">
+      <state>
+        <task path="$PROJECT_DIR$">
+          <activation />
+        </task>
+        <projects_view>
+          <tree_state>
+            <expand>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="rsmod" type="f1a62948:ProjectNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="rsmod" type="f1a62948:ProjectNode" />
+                <item name="rsmod" type="2d1252cf:ModuleNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="rsmod" type="f1a62948:ProjectNode" />
+                <item name="rsmod" type="2d1252cf:ModuleNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="rsmod" type="f1a62948:ProjectNode" />
+                <item name="rsmod" type="2d1252cf:ModuleNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="application" type="c8890929:TasksNode$1" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="rsmod" type="f1a62948:ProjectNode" />
+                <item name="rsmod" type="2d1252cf:ModuleNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="build" type="c8890929:TasksNode$1" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="rsmod" type="f1a62948:ProjectNode" />
+                <item name="rsmod" type="2d1252cf:ModuleNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="build setup" type="c8890929:TasksNode$1" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="rsmod" type="f1a62948:ProjectNode" />
+                <item name="rsmod" type="2d1252cf:ModuleNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="cache" type="c8890929:TasksNode$1" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="rsmod" type="f1a62948:ProjectNode" />
+                <item name="rsmod" type="2d1252cf:ModuleNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="installation" type="c8890929:TasksNode$1" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="rsmod" type="f1a62948:ProjectNode" />
+                <item name="rsmod" type="2d1252cf:ModuleNode" />
+                <item name="server" type="2d1252cf:ModuleNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="rsmod" type="f1a62948:ProjectNode" />
+                <item name="rsmod" type="2d1252cf:ModuleNode" />
+                <item name="server" type="2d1252cf:ModuleNode" />
+                <item name="install" type="2d1252cf:ModuleNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="rsmod" type="f1a62948:ProjectNode" />
+                <item name="rsmod" type="2d1252cf:ModuleNode" />
+                <item name="server" type="2d1252cf:ModuleNode" />
+                <item name="install" type="2d1252cf:ModuleNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="rsmod" type="f1a62948:ProjectNode" />
+                <item name="rsmod" type="2d1252cf:ModuleNode" />
+                <item name="server" type="2d1252cf:ModuleNode" />
+                <item name="install" type="2d1252cf:ModuleNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="build" type="c8890929:TasksNode$1" />
+              </path>
+            </expand>
+            <select />
+          </tree_state>
+        </projects_view>
+      </state>
+    </system>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GradleScriptDefinitionsStorage" workingDir="$PROJECT_DIR$" gradleHome="C:\Users\ha\.gradle\wrapper\dists\gradle-9.0.0-bin\d6wjpkvcgsg3oed0qlfss3wgl\gradle-9.0.0" javaHome="C:\Program Files\JetBrains\IntelliJ IDEA 2025.3.3\jbr" gradleVersion="9.0.0" />
+  <component name="McpProjectServerCommands">
+    <commands />
+    <urls />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;00000000&quot;
+}</component>
+  <component name="ProjectId" id="3AS73QTv68gy2tKkPp8ik8V74Nk" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Gradle.Build Cache.executor": "Run",
+    "Gradle.Build rsmod.executor": "Run",
+    "Gradle.Download Sources.executor": "Run",
+    "Gradle.rsmod [build].executor": "Run",
+    "Gradle.rsmod [downloadCache].executor": "Run",
+    "Gradle.rsmod [packCache].executor": "Run",
+    "Gradle.rsmod [run].executor": "Run",
+    "Kotlin.GameServer.executor": "Run",
+    "RunOnceActivity.MCP Project settings loaded": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "git-widget-placeholder": "main",
+    "ignore.virus.scanning.warn.message": "true",
+    "kotlin-language-version-configured": "true",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RunManager" selected="Gradle.rsmod [run]">
+    <configuration name="rsmod [build]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="build" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <ExternalSystemDebugDisabled>false</ExternalSystemDebugDisabled>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <GradleProfilingDisabled>false</GradleProfilingDisabled>
+      <GradleCoverageDisabled>false</GradleCoverageDisabled>
+      <method v="2" />
+    </configuration>
+    <configuration name="rsmod [downloadCache]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="downloadCache" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <ExternalSystemDebugDisabled>false</ExternalSystemDebugDisabled>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <GradleProfilingDisabled>false</GradleProfilingDisabled>
+      <GradleCoverageDisabled>false</GradleCoverageDisabled>
+      <method v="2" />
+    </configuration>
+    <configuration name="rsmod [packCache]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="packCache" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <ExternalSystemDebugDisabled>false</ExternalSystemDebugDisabled>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <GradleProfilingDisabled>false</GradleProfilingDisabled>
+      <GradleCoverageDisabled>false</GradleCoverageDisabled>
+      <method v="2" />
+    </configuration>
+    <configuration name="rsmod [run]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="run" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <ExternalSystemDebugDisabled>false</ExternalSystemDebugDisabled>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <GradleProfilingDisabled>false</GradleProfilingDisabled>
+      <GradleCoverageDisabled>false</GradleCoverageDisabled>
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Gradle.rsmod [run]" />
+        <item itemvalue="Gradle.rsmod [packCache]" />
+        <item itemvalue="Gradle.rsmod [downloadCache]" />
+        <item itemvalue="Gradle.rsmod [build]" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-30f59d01ecdd-2fc7cc6b9a17-intellij.indexing.shared.core-IU-253.31033.145" />
+        <option value="bundled-js-predefined-d6986cc7102b-9b0f141eb926-JavaScript-IU-253.31033.145" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="9978b840-f1ec-4b76-a344-b2da41a637e0" name="Changes" comment="" />
+      <created>1772573917980</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1772573917980</updated>
+      <workItem from="1772573922004" duration="765000" />
+      <workItem from="1772574750682" duration="12888000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>

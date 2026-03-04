@@ -160,6 +160,9 @@ public object NpcTypeDecoder {
                 }
                 107 -> active = false
                 109 -> rotationFlag = false
+                111 -> {
+                    // Render-priority override in newer revs (currently not modeled).
+                }
                 114 -> runAnim = data.readUnsignedShort()
                 115 -> {
                     runAnim = data.readUnsignedShort()
@@ -177,6 +180,24 @@ public object NpcTypeDecoder {
                 122 -> follower = true
                 123 -> lowPriorityOps = true
                 124 -> overlayHeight = data.readUnsignedShort()
+                126,
+                127 -> {
+                    // Footprint size (newer client metadata, currently not modeled).
+                    data.readUnsignedShort()
+                }
+                130 -> {
+                    // Ready-anim-during-anim toggle (currently not modeled).
+                }
+                145 -> {
+                    // Overlap hiding flag (currently not modeled).
+                }
+                146 -> {
+                    // Overlap tint HSL (currently not modeled).
+                    data.readUnsignedShort()
+                }
+                147 -> {
+                    // Z-buffer toggle (currently not modeled).
+                }
                 200 -> {
                     val id = data.readUnsignedByte().toInt()
                     moveRestrict = MoveRestrict.entries.first { it.id == id }

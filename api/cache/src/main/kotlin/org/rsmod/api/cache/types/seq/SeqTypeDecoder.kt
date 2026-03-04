@@ -136,6 +136,10 @@ public object SeqTypeDecoder {
                     keyframeRangeStart = data.readUnsignedShort()
                     keyframeRangeEnd = data.readUnsignedShort()
                 }
+                16 -> {
+                    // Vertical offset (newer sequence metadata, currently not modeled).
+                    data.readByte()
+                }
                 17 -> {
                     val keyframeWalkMerge = BooleanArray(256)
                     val count = data.readUnsignedByte().toInt()

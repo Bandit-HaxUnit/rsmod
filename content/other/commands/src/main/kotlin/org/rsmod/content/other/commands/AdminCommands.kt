@@ -5,6 +5,7 @@ import jakarta.inject.Inject
 import kotlin.math.max
 import kotlin.math.min
 import org.rsmod.annotations.InternalApi
+import org.rsmod.api.config.constants
 import org.rsmod.api.invtx.invAdd
 import org.rsmod.api.invtx.invClear
 import org.rsmod.api.player.output.MiscOutput
@@ -97,6 +98,7 @@ constructor(
             invalidArgs = "Use as ::npcadd duration npcDebugNameOrId (ex: 100 prison_pete)"
         }
         onCommand("invadd", "Spawn obj into inv", ::invAdd)
+        onCommand("spawn", "Spawn obj into inv using item search", ::spawn)
         onCommand("invclear", "Remove all objs from inv", ::invClear)
         onCommand("varp", "Set varp value", ::setVarp) {
             invalidArgs = "Use as ::varp debugNameOrId value (ex: option_run 1)"
@@ -278,6 +280,37 @@ constructor(
                 return
             }
             player.mes("Spawned inv obj `$objName` x ${spawned.completed().formatAmount}")
+        }
+
+    private fun spawn(cheat: Cheat) =
+        with(cheat) {
+            protectedAccess.launch(player, busyText = constants.dm_busy) {
+                val selected =
+                    objDialog(
+                        title = "Select an item to spawn:",
+                        stockMarketRestriction = false,
+                        showLastSearched = true,
+                    )
+                val count =
+                    choice2(
+                        choice1 = "1",
+                        result1 = 1,
+                        choice2 = "MAX",
+                        result2 = Int.MAX_VALUE,
+                        title = "How many ${selected.name}?",
+                    )
+                val spawned = invAdd(inv, selected, count, strict = false)
+                if (spawned.err is TransactionResult.RestrictedDummyitem) {
+                    mes("You can't spawn this item!")
+                    return@launch
+                }
+                if (spawned.noneCompleted()) {
+                    mes(constants.dm_invspace)
+                    return@launch
+                }
+                val objName = selected.internalName ?: selected.name
+                mes("Spawned inv obj `$objName` x ${spawned.completed().formatAmount}")
+            }
         }
 
     private fun invClear(cheat: Cheat) = with(cheat) { player.invClear(player.inv) }

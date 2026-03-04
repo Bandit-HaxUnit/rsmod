@@ -15,9 +15,11 @@ import org.rsmod.api.shops.operation.StandardGpShopOperations
 import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.InvObj
 import org.rsmod.game.shop.Shop
+import org.rsmod.game.type.comp.HashedComponentType
 import org.rsmod.game.type.interf.IfButtonOp
 import org.rsmod.game.type.obj.ObjType
 import org.rsmod.game.type.obj.isAssociatedWith
+import org.rsmod.game.ui.Component
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -35,6 +37,7 @@ constructor(
         onIfModalButton(ShopComponents.shop_side_inv) {
             shopSideInvButton(it.comsub, it.op, it.obj)
         }
+        onIfModalButton(legacyCloseButton) { closeShopButton() }
         onIfClose(ShopInterfaces.shop_main) { player.closeShop() }
     }
 
@@ -78,6 +81,18 @@ constructor(
         return null
     }
 
+    private fun ProtectedAccess.closeShopButton() {
+        player.closeShop()
+        ifClose()
+    }
+
     private fun isClientObjInvalid(invObj: InvObj, clientObj: ObjType?): Boolean =
         clientObj == null || !clientObj.isAssociatedWith(invObj)
+
+    private val legacyCloseButton =
+        HashedComponentType(
+            startHash = null,
+            internalName = "shopmain:close_fallback",
+            internalId = Component(ShopInterfaces.shop_main.id, 3).packed,
+        )
 }

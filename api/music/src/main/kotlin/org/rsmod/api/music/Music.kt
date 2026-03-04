@@ -1,6 +1,5 @@
 package org.rsmod.api.music
 
-import org.rsmod.game.type.dbrow.DbRowType
 import org.rsmod.game.type.midi.MidiType
 import org.rsmod.game.type.varp.VarpType
 
@@ -13,7 +12,7 @@ public data class Music(
     val unlockVarp: VarpType?,
     val unlockBitpos: Int,
     val hidden: Boolean,
-    val secondary: DbRowType?,
+    val secondary: Int?,
 ) {
     val unlockBitflag: Int
         get() = 1 shl unlockBitpos

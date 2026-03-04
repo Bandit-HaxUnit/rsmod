@@ -5,6 +5,7 @@ import org.rsmod.game.type.TypeListMap
 import org.rsmod.game.type.area.AreaType
 import org.rsmod.game.type.category.CategoryType
 import org.rsmod.game.type.comp.ComponentType
+import org.rsmod.game.type.comp.HashedComponentType
 import org.rsmod.game.type.dbrow.DbRowType
 import org.rsmod.game.type.dbtable.DbTableType
 import org.rsmod.game.type.enums.EnumType
@@ -76,8 +77,13 @@ public object CacheVarCoordGridCodec : BaseIntVarCodec<CoordGrid>(CoordGrid::cla
 }
 
 public object CacheVarComponentCodec : BaseIntVarCodec<ComponentType>(ComponentType::class) {
-    override fun decode(types: TypeListMap, value: Int): ComponentType? =
-        types.components[value]?.toHashedType()
+    override fun decode(types: TypeListMap, value: Int): ComponentType? {
+        if (value == -1) {
+            return null
+        }
+        return types.components[value]?.toHashedType()
+            ?: HashedComponentType(startHash = null, internalName = null, internalId = value)
+    }
 
     override fun encode(value: ComponentType): Int = value.packed
 }
