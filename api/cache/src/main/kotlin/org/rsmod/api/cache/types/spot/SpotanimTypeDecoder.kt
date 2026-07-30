@@ -10,6 +10,7 @@ import org.openrs2.cache.Cache
 import org.rsmod.api.cache.Js5Archives
 import org.rsmod.api.cache.Js5Configs
 import org.rsmod.api.cache.util.TextUtil
+import org.rsmod.api.cache.util.readIntOrNull
 import org.rsmod.api.cache.util.readUnsignedShortOrNull
 import org.rsmod.game.type.TypeResolver
 import org.rsmod.game.type.spot.SpotanimTypeBuilder
@@ -46,6 +47,10 @@ public object SpotanimTypeDecoder {
             when (code) {
                 1 -> model = data.readUnsignedShortOrNull()
                 2 -> anim = data.readUnsignedShort()
+                3 -> model = data.readIntOrNull()
+                10 -> {
+                    // Unknown flag in newer cache revs (currently not modeled in `SpotanimType`).
+                }
                 4 -> resizeH = data.readUnsignedShort()
                 5 -> resizeV = data.readUnsignedShort()
                 6 -> rotation = data.readUnsignedShort()

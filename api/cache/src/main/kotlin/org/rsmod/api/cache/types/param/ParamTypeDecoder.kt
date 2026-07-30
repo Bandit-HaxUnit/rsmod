@@ -10,6 +10,7 @@ import org.rsmod.api.cache.Js5Archives
 import org.rsmod.api.cache.Js5Configs
 import org.rsmod.api.cache.util.TextUtil
 import org.rsmod.game.type.TypeResolver
+import org.rsmod.game.type.literal.CacheVarLiteral
 import org.rsmod.game.type.param.ParamTypeBuilder
 import org.rsmod.game.type.param.ParamTypeList
 import org.rsmod.game.type.param.UnpackedParamType
@@ -46,6 +47,11 @@ public object ParamTypeDecoder {
                 2 -> defaultInt = data.readInt()
                 4 -> autoDisable = false
                 5 -> defaultStr = data.readString()
+                7 -> {
+                    // Long default value (currently not modeled in `ParamType`).
+                    data.readLong()
+                }
+                8 -> typeCharId = CacheVarLiteral[data.readUnsignedByte().toInt()]?.char
                 200 -> transmit = false
                 else -> throw IOException("Error unrecognised .param config code: $code")
             }

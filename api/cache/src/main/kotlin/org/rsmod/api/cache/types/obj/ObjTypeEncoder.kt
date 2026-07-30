@@ -50,8 +50,8 @@ public object ObjTypeEncoder {
     public fun encodeJs5(type: UnpackedObjType, data: ByteBuf, ctx: EncoderContext): Unit =
         with(type) {
             if (model != 0) {
-                data.writeByte(1)
-                data.writeShort(model)
+                data.writeByte(44)
+                data.writeInt(model)
             }
 
             if (name.isNotBlank()) {
@@ -113,25 +113,25 @@ public object ObjTypeEncoder {
             }
 
             if (manwear != ObjTypeBuilder.DEFAULT_MANWEAR) {
-                data.writeByte(23)
-                data.writeShort(manwear)
+                data.writeByte(45)
+                data.writeInt(manwear)
                 data.writeByte(manwearOff)
             }
 
             if (manwear2 != ObjTypeBuilder.DEFAULT_MANWEAR2) {
-                data.writeByte(24)
-                data.writeShort(manwear2)
+                data.writeByte(46)
+                data.writeInt(manwear2)
             }
 
             if (womanwear != ObjTypeBuilder.DEFAULT_WOMANWEAR) {
-                data.writeByte(25)
-                data.writeShort(womanwear)
+                data.writeByte(48)
+                data.writeInt(womanwear)
                 data.writeByte(womanwearOff)
             }
 
             if (womanwear2 != ObjTypeBuilder.DEFAULT_WOMANWEAR2) {
-                data.writeByte(26)
-                data.writeShort(womanwear2)
+                data.writeByte(49)
+                data.writeInt(womanwear2)
             }
 
             if (wearpos3 != ObjTypeBuilder.DEFAULT_WEARPOS3) {
@@ -197,33 +197,33 @@ public object ObjTypeEncoder {
             }
 
             if (manwear3 != ObjTypeBuilder.DEFAULT_MANWEAR3) {
-                data.writeByte(78)
-                data.writeShort(manwear3)
+                data.writeByte(47)
+                data.writeInt(manwear3)
             }
 
             if (womanwear3 != ObjTypeBuilder.DEFAULT_WOMANWEAR3) {
-                data.writeByte(79)
-                data.writeShort(womanwear3)
+                data.writeByte(50)
+                data.writeInt(womanwear3)
             }
 
             if (manhead != ObjTypeBuilder.DEFAULT_MANHEAD) {
-                data.writeByte(90)
-                data.writeShort(manhead)
+                data.writeByte(51)
+                data.writeInt(manhead)
             }
 
             if (womanhead != ObjTypeBuilder.DEFAULT_WOMANHEAD) {
-                data.writeByte(91)
-                data.writeShort(womanhead)
+                data.writeByte(53)
+                data.writeInt(womanhead)
             }
 
             if (manhead2 != ObjTypeBuilder.DEFAULT_MANHEAD2) {
-                data.writeByte(92)
-                data.writeShort(manhead2)
+                data.writeByte(52)
+                data.writeInt(manhead2)
             }
 
             if (womanhead2 != ObjTypeBuilder.DEFAULT_WOMANHEAD2) {
-                data.writeByte(93)
-                data.writeShort(womanhead2)
+                data.writeByte(54)
+                data.writeInt(womanhead2)
             }
 
             if (category != ObjTypeBuilder.DEFAULT_CATEGORY) {

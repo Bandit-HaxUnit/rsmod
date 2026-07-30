@@ -11,9 +11,10 @@ import kotlin.contracts.contract
 import kotlin.reflect.KClass
 import net.rsprot.protocol.game.incoming.buttons.If3Button
 import net.rsprot.protocol.game.incoming.buttons.IfButtonD
-import net.rsprot.protocol.game.incoming.locs.OpLoc
+import net.rsprot.protocol.game.incoming.locs.OpLocV2
 import net.rsprot.protocol.game.incoming.misc.user.MoveGameClick
-import net.rsprot.protocol.game.incoming.npcs.OpNpc
+import net.rsprot.protocol.game.incoming.misc.user.SetHeading
+import net.rsprot.protocol.game.incoming.npcs.OpNpcV2
 import net.rsprot.protocol.game.incoming.resumed.ResumePCountDialog
 import net.rsprot.protocol.game.outgoing.misc.player.MessageGame
 import net.rsprot.protocol.util.CombinedId
@@ -33,6 +34,7 @@ import org.rsmod.api.net.rsprot.handlers.MoveGameClickHandler
 import org.rsmod.api.net.rsprot.handlers.OpLocHandler
 import org.rsmod.api.net.rsprot.handlers.OpNpcHandler
 import org.rsmod.api.net.rsprot.handlers.ResumePCountDialogHandler
+import org.rsmod.api.net.rsprot.handlers.SetHeadingHandler
 import org.rsmod.api.npc.apPlayer2
 import org.rsmod.api.npc.hit.modifier.NpcHitModifier
 import org.rsmod.api.npc.hit.modifier.StandardNpcHitModifier
@@ -68,6 +70,7 @@ import org.rsmod.api.registry.npc.isSuccess
 import org.rsmod.api.registry.obj.ObjRegistry
 import org.rsmod.api.registry.player.PlayerRegistry
 import org.rsmod.api.registry.region.RegionRegistry
+import org.rsmod.api.registry.worldentity.WorldEntityRegistry
 import org.rsmod.api.registry.zone.ZonePlayerActivityBitSet
 import org.rsmod.api.repo.controller.ControllerRepository
 import org.rsmod.api.repo.loc.LocRepository
@@ -77,6 +80,7 @@ import org.rsmod.api.repo.player.PlayerRepository
 import org.rsmod.api.repo.region.RegionRepository
 import org.rsmod.api.repo.region.RegionTemplate
 import org.rsmod.api.repo.world.WorldRepository
+import org.rsmod.api.repo.worldentity.WorldEntityRepository
 import org.rsmod.api.route.BoundValidator
 import org.rsmod.api.route.RayCastFactory
 import org.rsmod.api.route.RayCastValidator
@@ -109,6 +113,7 @@ import org.rsmod.game.entity.NpcList
 import org.rsmod.game.entity.PathingEntity
 import org.rsmod.game.entity.Player
 import org.rsmod.game.entity.PlayerList
+import org.rsmod.game.entity.WorldEntityList
 import org.rsmod.game.entity.player.SessionStateEvent
 import org.rsmod.game.entity.util.PathingEntityCommon
 import org.rsmod.game.entity.util.ShuffledPlayerList
@@ -203,6 +208,7 @@ constructor(
     private val ifButtonHandler: If3ButtonHandler,
     private val ifButtonDHandler: IfButtonDHandler,
     private val gameClickHandler: MoveGameClickHandler,
+    private val setHeadingHandler: SetHeadingHandler,
     private val resumePCountDialog: ResumePCountDialogHandler,
     private val opLocHandler: OpLocHandler,
     private val opNpcHandler: OpNpcHandler,
@@ -363,52 +369,52 @@ constructor(
     }
 
     public fun Player.opLoc1(loc: BoundLocInfo, controlKey: Boolean = false) {
-        val message = OpLoc(loc.id, loc.x, loc.z, controlKey, op = 1)
+        val message = OpLocV2(loc.id, loc.x, loc.z, controlKey, op = 1, subop = 0)
         captureClient.queue(opLocHandler, message)
     }
 
     public fun Player.opLoc2(loc: BoundLocInfo, controlKey: Boolean = false) {
-        val message = OpLoc(loc.id, loc.x, loc.z, controlKey, op = 2)
+        val message = OpLocV2(loc.id, loc.x, loc.z, controlKey, op = 2, subop = 0)
         captureClient.queue(opLocHandler, message)
     }
 
     public fun Player.opLoc3(loc: BoundLocInfo, controlKey: Boolean = false) {
-        val message = OpLoc(loc.id, loc.x, loc.z, controlKey, op = 3)
+        val message = OpLocV2(loc.id, loc.x, loc.z, controlKey, op = 3, subop = 0)
         captureClient.queue(opLocHandler, message)
     }
 
     public fun Player.opLoc4(loc: BoundLocInfo, controlKey: Boolean = false) {
-        val message = OpLoc(loc.id, loc.x, loc.z, controlKey, op = 4)
+        val message = OpLocV2(loc.id, loc.x, loc.z, controlKey, op = 4, subop = 0)
         captureClient.queue(opLocHandler, message)
     }
 
     public fun Player.opLoc5(loc: BoundLocInfo, controlKey: Boolean = false) {
-        val message = OpLoc(loc.id, loc.x, loc.z, controlKey, op = 5)
+        val message = OpLocV2(loc.id, loc.x, loc.z, controlKey, op = 5, subop = 0)
         captureClient.queue(opLocHandler, message)
     }
 
     public fun Player.opNpc1(npc: Npc, controlKey: Boolean = false) {
-        val message = OpNpc(npc.slotId, controlKey, op = 1)
+        val message = OpNpcV2(npc.slotId, controlKey, op = 1, subop = 0)
         captureClient.queue(opNpcHandler, message)
     }
 
     public fun Player.opNpc2(npc: Npc, controlKey: Boolean = false) {
-        val message = OpNpc(npc.slotId, controlKey, op = 2)
+        val message = OpNpcV2(npc.slotId, controlKey, op = 2, subop = 0)
         captureClient.queue(opNpcHandler, message)
     }
 
     public fun Player.opNpc3(npc: Npc, controlKey: Boolean = false) {
-        val message = OpNpc(npc.slotId, controlKey, op = 3)
+        val message = OpNpcV2(npc.slotId, controlKey, op = 3, subop = 0)
         captureClient.queue(opNpcHandler, message)
     }
 
     public fun Player.opNpc4(npc: Npc, controlKey: Boolean = false) {
-        val message = OpNpc(npc.slotId, controlKey, op = 4)
+        val message = OpNpcV2(npc.slotId, controlKey, op = 4, subop = 0)
         captureClient.queue(opNpcHandler, message)
     }
 
     public fun Player.opNpc5(npc: Npc, controlKey: Boolean = false) {
-        val message = OpNpc(npc.slotId, controlKey, op = 5)
+        val message = OpNpcV2(npc.slotId, controlKey, op = 5, subop = 0)
         captureClient.queue(opNpcHandler, message)
     }
 
@@ -483,6 +489,11 @@ constructor(
         allocZoneCollision(dest)
         val message = MoveGameClick(dest.x, dest.z, keyCombination)
         captureClient.queue(gameClickHandler, message)
+    }
+
+    public fun Player.setHeading(heading: Int) {
+        val message = SetHeading(heading)
+        captureClient.queue(setHeadingHandler, message)
     }
 
     public fun Player.withProtectedAccess(action: suspend ProtectedAccess.() -> Unit) {
@@ -899,6 +910,9 @@ constructor(
             bind(RegionRepository::class.java).`in`(Scopes.SINGLETON)
             bind(ObjRegistry::class.java).`in`(Scopes.SINGLETON)
             bind(ObjRepository::class.java).`in`(Scopes.SINGLETON)
+            bind(WorldEntityList::class.java).`in`(Scopes.SINGLETON)
+            bind(WorldEntityRegistry::class.java).`in`(Scopes.SINGLETON)
+            bind(WorldEntityRepository::class.java).`in`(Scopes.SINGLETON)
             bind(WorldRepository::class.java).`in`(Scopes.SINGLETON)
 
             // These type lists can be modified by tests to ensure interactions pass

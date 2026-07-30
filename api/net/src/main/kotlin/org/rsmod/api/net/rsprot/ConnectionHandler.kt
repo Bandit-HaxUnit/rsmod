@@ -63,10 +63,25 @@ private constructor(
             return
         }
 
-        if (!block.crc.validate(js5Crc)) {
-            responseHandler.writeFailedResponse(LoginResponse.OutOfDateReload)
-            return
+        val crcValid = block.crc.validate(js5Crc)
+        if (!crcValid) {
+            val devMode = realm.config.devMode
+            if (devMode) {
+                logger.warn {
+                    "Login CRC mismatch for '${block.username}' - bypassing in dev mode. " +
+                        "Ensure the client cache matches the server JS5 cache " +
+                        "(re-download vanilla cache or use RSProx historic cache)."
+                }
+            } else {
+                logger.warn {
+                    "Login CRC mismatch for '${block.username}' - rejecting with OutOfDateReload."
+                }
+                responseHandler.writeFailedResponse(LoginResponse.OutOfDateReload)
+                return
+            }
         }
+
+        logger.info { "Login request received for '${block.username}'." }
 
         when (val auth = block.authentication) {
             is AuthenticationType.PasswordAuthentication -> passLogin(responseHandler, block, auth)

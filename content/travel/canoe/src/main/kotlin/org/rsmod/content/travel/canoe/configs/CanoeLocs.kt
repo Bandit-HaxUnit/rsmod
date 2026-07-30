@@ -22,10 +22,10 @@ object CanoeLocs : LocReferences() {
     val floating_stable_dugout =
         find("canoeing_catamaran_canoeing_station_in_water", 2907545460324258190)
     val floating_waka = find("canoeing_waka_canoeing_station_in_water", 2907545460324258191)
-    val sinking_log = find("canoeing_log_sinking", 6110366560596651993)
-    val sinking_dugout = find("canoeing_dugout_sinking", 6110366560596651994)
-    val sinking_stable_dugout = find("canoeing_catamaran_sinking", 6110366560596651995)
-    val sinking_waka = find("canoeing_waka_sinking", 6110366560596651996)
+    val sinking_log = find("canoeing_log_sinking", 1655766576774763308)
+    val sinking_dugout = find("canoeing_dugout_sinking", 1655766576774763309)
+    val sinking_stable_dugout = find("canoeing_catamaran_sinking", 1655766576774763310)
+    val sinking_waka = find("canoeing_waka_sinking", 1655766576774763311)
 }
 
 object CanoeLocEditor : LocEditor() {

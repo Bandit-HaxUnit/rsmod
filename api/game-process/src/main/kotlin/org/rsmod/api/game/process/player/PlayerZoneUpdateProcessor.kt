@@ -5,6 +5,7 @@ import it.unimi.dsi.fastutil.ints.IntList
 import jakarta.inject.Inject
 import java.util.ArrayList
 import net.rsprot.protocol.common.client.OldSchoolClientType
+import net.rsprot.protocol.game.outgoing.worldentity.SetActiveWorldV2
 import net.rsprot.protocol.game.outgoing.zone.header.UpdateZoneFullFollows
 import net.rsprot.protocol.game.outgoing.zone.header.UpdateZonePartialEnclosed
 import net.rsprot.protocol.message.ZoneProt
@@ -15,9 +16,12 @@ import org.rsmod.api.registry.zone.ZoneUpdateTransformer
 import org.rsmod.api.utils.map.BuildAreaUtils
 import org.rsmod.api.utils.zone.SharedZoneEnclosedBuffers
 import org.rsmod.game.entity.Player
+import org.rsmod.game.entity.WorldEntity
+import org.rsmod.game.entity.WorldEntityList
 import org.rsmod.game.loc.LocInfo
 import org.rsmod.game.obj.Obj
 import org.rsmod.map.CoordGrid
+import org.rsmod.map.zone.ZoneGrid
 import org.rsmod.map.zone.ZoneKey
 
 public class PlayerZoneUpdateProcessor
@@ -27,6 +31,7 @@ constructor(
     private val locReg: LocRegistry,
     private val objReg: ObjRegistry,
     private val enclosedBuffers: SharedZoneEnclosedBuffers,
+    private val worldEntities: WorldEntityList,
 ) {
     public fun computeEnclosedBuffers() {
         enclosedBuffers.computeSharedBuffers()
@@ -34,6 +39,47 @@ constructor(
 
     public fun process(player: Player) {
         player.processZoneUpdates()
+    }
+
+    public fun processRootWorldZones(player: Player) {
+        val plan = player.computeZoneUpdatePlan()
+        val context = RootZoneWorldContext()
+        if (plan.zoneMoved) {
+            processNewVisibleZonesForContext(player, plan.buildArea, plan.newRootZones, context)
+            player.processVisibleZoneUpdatesForContext(plan.buildArea, plan.oldRootZones, context)
+        } else {
+            player.processVisibleZoneUpdatesForContext(
+                plan.buildArea,
+                player.visibleZoneKeys.filterRootZones(plan.aboard),
+                context,
+            )
+        }
+    }
+
+    public fun processDynamicWorldZones(player: Player, entityIndex: Int) {
+        val plan = player.computeZoneUpdatePlan()
+        val entity = worldEntities[entityIndex] ?: return
+        if (plan.aboard?.slotId != entity.slotId) {
+            return
+        }
+        val context = DynamicZoneWorldContext(entity)
+        if (plan.zoneMoved) {
+            processNewVisibleZonesForContext(player, plan.buildArea, plan.newEntityZones, context)
+            player.processVisibleZoneUpdatesForContext(plan.buildArea, plan.oldEntityZones, context)
+        } else {
+            player.processVisibleZoneUpdatesForContext(
+                plan.buildArea,
+                player.visibleZoneKeys.filterEntityZones(plan.aboard),
+                context,
+            )
+        }
+        context.finish()
+    }
+
+    public fun finalizeZoneUpdates(player: Player) {
+        val plan = player.computeZoneUpdatePlan()
+        player.applyVisibleZoneKeys(plan.allVisibleZones)
+        player.lastProcessedZone = plan.currZone
     }
 
     public fun clearEnclosedBuffers() {
@@ -50,53 +96,140 @@ constructor(
         val prevZone = lastProcessedZone
         val buildArea = buildArea
 
+        val aboard = worldEntities.firstOrNull { it.containsInstanceCoords(coords) }
+        val anchorZone = if (aboard != null) ZoneKey.from(aboard.rootCoord) else currZone
+
         if (currZone != prevZone) {
-            // Compute neighbouring zones based on the player's current zone.
             val currZones =
-                currZone.computeVisibleNeighbouringZones().filterWithinBuildArea(buildArea)
+                anchorZone.computeVisibleNeighbouringZones().filterWithinBuildArea(buildArea)
+            if (aboard != null) {
+                currZones.addAll(aboard.instanceZones())
+            }
 
-            // Determine the newly visible zones that were not previously visible.
-            // These are zones that need to be reset and have persistent updates/entities sent.
             val newZones = IntArrayList(currZones).apply { removeAll(visibleZones) }
-            processNewVisibleZones(buildArea, newZones)
+            processNewVisibleZones(buildArea, newZones, aboard)
 
-            // Update the player's cached visible zone keys to reflect the current visible zones.
             refreshVisibleZoneKeys(currZones)
 
-            // Identify zones that have been visible for more than one cycle (or one call to this
-            // processor). These zones will have their transient updates sent. This prevents a newly
-            // visible zone from immediately sending a transient update (e.g., an `ObjAdd` update)
-            // right after a persistent entity update, which could occur if an obj is spawned on the
-            // ground the same cycle the zone becomes visible to the player.
             val oldZones = IntArrayList(currZones).apply { removeAll(newZones) }
-            processVisibleZoneUpdates(buildArea, oldZones)
+            processVisibleZoneUpdates(buildArea, oldZones, aboard)
         } else {
-            // If the player hasn't moved to a new zone, process updates for currently visible
-            // zones.
-            processVisibleZoneUpdates(buildArea, visibleZones)
+            processVisibleZoneUpdates(buildArea, visibleZones, aboard)
         }
 
         lastProcessedZone = currZone
     }
 
-    private fun Player.processNewVisibleZones(buildArea: CoordGrid, zones: IntList) {
+    private fun Player.computeZoneUpdatePlan(): ZoneUpdatePlan {
+        val buildArea = buildArea
+        val currZone = ZoneKey.from(coords)
+        val prevZone = lastProcessedZone
+        val aboard = worldEntities.firstOrNull { it.containsInstanceCoords(coords) }
+        val anchorZone = if (aboard != null) ZoneKey.from(aboard.rootCoord) else currZone
+        val rootVisibleZones =
+            anchorZone.computeVisibleNeighbouringZones().filterWithinBuildArea(buildArea)
+        val entityVisibleZones = aboard?.instanceZones() ?: IntArrayList(0)
+        val allVisibleZones =
+            IntArrayList(rootVisibleZones.size + entityVisibleZones.size).apply {
+                addAll(rootVisibleZones)
+                addAll(entityVisibleZones)
+            }
+        val zoneMoved = currZone != prevZone
+        val newZones =
+            if (zoneMoved) {
+                IntArrayList(allVisibleZones).apply { removeAll(visibleZoneKeys) }
+            } else {
+                IntArrayList(0)
+            }
+        val oldZones =
+            if (zoneMoved) {
+                IntArrayList(allVisibleZones).apply { removeAll(newZones) }
+            } else {
+                IntArrayList(0)
+            }
+        return ZoneUpdatePlan(
+            buildArea = buildArea,
+            aboard = aboard,
+            currZone = currZone,
+            zoneMoved = zoneMoved,
+            allVisibleZones = allVisibleZones,
+            newRootZones = newZones.filterRootZones(aboard),
+            newEntityZones = newZones.filterEntityZones(aboard),
+            oldRootZones = oldZones.filterRootZones(aboard),
+            oldEntityZones = oldZones.filterEntityZones(aboard),
+        )
+    }
+
+    private fun Player.processNewVisibleZones(
+        buildArea: CoordGrid,
+        zones: IntList,
+        aboard: WorldEntity?,
+    ) {
+        val worldContext = ZoneWorldContext(this, aboard)
         for (zone in zones.intIterator()) {
             val key = ZoneKey(zone)
             val zoneBase = key.toCoords()
-            sendZoneResetUpdate(buildArea, zoneBase)
-            sendZonePersistentUpdates(buildArea, zoneBase, key)
+            val relativeBase = worldContext.prepare(zoneBase, buildArea)
+            sendZoneResetUpdate(relativeBase, zoneBase)
+            sendZonePersistentUpdates(relativeBase, zoneBase, key)
+        }
+        worldContext.finish()
+    }
+
+    private fun processNewVisibleZonesForContext(
+        player: Player,
+        buildArea: CoordGrid,
+        zones: IntList,
+        worldContext: ZoneUpdateContext,
+    ) {
+        for (zone in zones.intIterator()) {
+            val key = ZoneKey(zone)
+            val zoneBase = key.toCoords()
+            val relativeBase = worldContext.prepare(zoneBase, buildArea)
+            player.sendZoneResetUpdate(relativeBase, zoneBase)
+            player.sendZonePersistentUpdates(relativeBase, zoneBase, key)
         }
     }
 
-    private fun Player.sendZoneResetUpdate(buildArea: CoordGrid, zoneBase: CoordGrid) {
-        val deltaX = zoneBase.x - buildArea.x
-        val deltaZ = zoneBase.z - buildArea.z
+    private fun Player.processVisibleZoneUpdates(
+        buildArea: CoordGrid,
+        currZones: List<Int>,
+        aboard: WorldEntity?,
+    ) {
+        val worldContext = ZoneWorldContext(this, aboard)
+        for (zone in currZones) {
+            val zoneKey = ZoneKey(zone)
+            val zoneBase = zoneKey.toCoords()
+            val relativeBase = worldContext.prepare(zoneBase, buildArea)
+            sendZoneSharedEnclosedUpdates(relativeBase, zoneKey, zoneBase)
+            sendZonePlayerEnclosedUpdates(relativeBase, zoneKey, zoneBase)
+        }
+        worldContext.finish()
+    }
+
+    private fun Player.processVisibleZoneUpdatesForContext(
+        buildArea: CoordGrid,
+        currZones: List<Int>,
+        worldContext: ZoneUpdateContext,
+    ) {
+        for (zone in currZones) {
+            val zoneKey = ZoneKey(zone)
+            val zoneBase = zoneKey.toCoords()
+            val relativeBase = worldContext.prepare(zoneBase, buildArea)
+            sendZoneSharedEnclosedUpdates(relativeBase, zoneKey, zoneBase)
+            sendZonePlayerEnclosedUpdates(relativeBase, zoneKey, zoneBase)
+        }
+    }
+
+    private fun Player.sendZoneResetUpdate(relativeBase: CoordGrid, zoneBase: CoordGrid) {
+        val deltaX = zoneBase.x - relativeBase.x
+        val deltaZ = zoneBase.z - relativeBase.z
         val message = UpdateZoneFullFollows(deltaX, deltaZ, zoneBase.level)
         client.write(message)
     }
 
     private fun Player.sendZonePersistentUpdates(
-        buildArea: CoordGrid,
+        relativeBase: CoordGrid,
         zoneBase: CoordGrid,
         zone: ZoneKey,
     ) {
@@ -104,7 +237,7 @@ constructor(
         sendPersistentLocs(spawnedLocs)
 
         val spawnedObjs = objReg.findAll(zone)
-        sendPersistentObjs(buildArea, zoneBase, spawnedObjs, observerUUID)
+        sendPersistentObjs(relativeBase, zoneBase, spawnedObjs, observerUUID)
     }
 
     private fun Player.sendPersistentLocs(locs: Sequence<LocInfo>) {
@@ -115,70 +248,65 @@ constructor(
     }
 
     private fun Player.sendPersistentObjs(
-        buildArea: CoordGrid,
+        relativeBase: CoordGrid,
         zoneBase: CoordGrid,
         objs: Sequence<Obj>,
         observerId: Long?,
     ) {
-        val updates = ArrayList<ZoneProt>()
+        val enclosedUpdates = ArrayList<ZoneProt>()
         for (obj in objs) {
             val prot = ZoneUpdateTransformer.toPersistentObjAdd(obj, observerId) ?: continue
-            updates += prot
+            enclosedUpdates += prot
         }
-        if (updates.isNotEmpty()) {
-            sendZonePlayerEnclosedUpdates(buildArea, zoneBase, updates)
+        if (enclosedUpdates.isNotEmpty()) {
+            sendZonePlayerEnclosedUpdates(relativeBase, zoneBase, enclosedUpdates)
         }
     }
 
     private fun Player.refreshVisibleZoneKeys(zones: IntList) {
+        applyVisibleZoneKeys(zones)
+    }
+
+    private fun Player.applyVisibleZoneKeys(zones: IntList) {
         visibleZoneKeys.clear()
         visibleZoneKeys.addAll(zones)
     }
 
-    private fun Player.processVisibleZoneUpdates(buildArea: CoordGrid, currZones: List<Int>) {
-        for (zone in currZones) {
-            val zoneKey = ZoneKey(zone)
-            val zoneBase = zoneKey.toCoords()
-            sendZoneSharedEnclosedUpdates(buildArea, zoneKey, zoneBase)
-            sendZonePlayerEnclosedUpdates(buildArea, zoneKey, zoneBase)
-        }
-    }
-
     private fun Player.sendZonePlayerEnclosedUpdates(
-        buildArea: CoordGrid,
+        relativeBase: CoordGrid,
         zone: ZoneKey,
         zoneBase: CoordGrid,
     ) {
-        val updates = updates[zone] ?: return
-        check(updates.isNotEmpty) { "`updates` for zone should not be empty: $zone" }
-        val playerSpecific = updates.toPlayerSpecificEnclosed(observerUUID)
-        sendZonePlayerEnclosedUpdates(buildArea, zoneBase, playerSpecific)
+        val zoneUpdates = updates[zone] ?: return
+        check(zoneUpdates.isNotEmpty) { "`updates` for zone should not be empty: $zone" }
+        val playerSpecific = zoneUpdates.toPlayerSpecificEnclosed(observerUUID)
+        sendZonePlayerEnclosedUpdates(relativeBase, zoneBase, playerSpecific)
     }
 
     private fun Player.sendZonePlayerEnclosedUpdates(
-        buildArea: CoordGrid,
+        relativeBase: CoordGrid,
         zoneBase: CoordGrid,
-        updates: List<ZoneProt>,
+        enclosedUpdates: List<ZoneProt>,
     ) {
-        if (updates.isEmpty()) {
+        if (enclosedUpdates.isEmpty()) {
             return
         }
-        val buffer = enclosedBuffers.computeBufferForClient(OldSchoolClientType.DESKTOP, updates)
-        val deltaX = zoneBase.x - buildArea.x
-        val deltaZ = zoneBase.z - buildArea.z
+        val buffer = enclosedBuffers.computeBufferForClient(OldSchoolClientType.DESKTOP, enclosedUpdates)
+        val deltaX = zoneBase.x - relativeBase.x
+        val deltaZ = zoneBase.z - relativeBase.z
         val message = UpdateZonePartialEnclosed(deltaX, deltaZ, zoneBase.level, buffer)
         client.write(message)
     }
 
     private fun Player.sendZoneSharedEnclosedUpdates(
-        buildArea: CoordGrid,
+        relativeBase: CoordGrid,
         zone: ZoneKey,
         zoneBase: CoordGrid,
     ) {
         val enclosed = enclosedBuffers[zone] ?: return
         val buffer = enclosed[OldSchoolClientType.DESKTOP] ?: return
-        val deltaX = zoneBase.x - buildArea.x
-        val deltaZ = zoneBase.z - buildArea.z
+        val deltaX = zoneBase.x - relativeBase.x
+        val deltaZ = zoneBase.z - relativeBase.z
         val prot = UpdateZonePartialEnclosed(deltaX, deltaZ, zoneBase.level, buffer)
         client.write(prot)
     }
@@ -232,7 +360,133 @@ constructor(
         return zones
     }
 
+    private fun IntList.filterRootZones(aboard: WorldEntity?): IntList {
+        if (aboard == null) {
+            return this
+        }
+        val zones = IntArrayList(size)
+        forEach { zone ->
+            if (!aboard.containsInstanceZone(ZoneKey(zone))) {
+                zones.add(zone)
+            }
+        }
+        return zones
+    }
+
+    private fun IntList.filterEntityZones(aboard: WorldEntity?): IntList {
+        if (aboard == null) {
+            return IntArrayList(0)
+        }
+        val zones = IntArrayList(size)
+        forEach { zone ->
+            if (aboard.containsInstanceZone(ZoneKey(zone))) {
+                zones.add(zone)
+            }
+        }
+        return zones
+    }
+
+    private fun WorldEntity.instanceZones(): IntList {
+        val zones = IntArrayList(sizeX * sizeZ)
+        for (dx in 0 until sizeX) {
+            for (dz in 0 until sizeZ) {
+                zones.add(ZoneKey(southWestZoneX + dx, southWestZoneZ + dz, activeLevel).packed)
+            }
+        }
+        return zones
+    }
+
+    private fun WorldEntity.containsInstanceZone(zone: ZoneKey): Boolean {
+        return zone.x in southWestZoneX until southWestZoneX + sizeX &&
+            zone.z in southWestZoneZ until southWestZoneZ + sizeZ &&
+            zone.level == activeLevel
+    }
+
+    private fun WorldEntity.dynamicZoneBase(): CoordGrid =
+        CoordGrid(
+            x = southWestZoneX * ZoneGrid.LENGTH,
+            z = southWestZoneZ * ZoneGrid.LENGTH,
+            level = activeLevel,
+        )
+
+    private interface ZoneUpdateContext {
+        fun prepare(zoneBase: CoordGrid, buildArea: CoordGrid): CoordGrid
+
+        fun finish() {}
+    }
+
+    private class RootZoneWorldContext : ZoneUpdateContext {
+        override fun prepare(zoneBase: CoordGrid, buildArea: CoordGrid): CoordGrid = buildArea
+    }
+
+    private class DynamicZoneWorldContext(private val entity: WorldEntity) : ZoneUpdateContext {
+        override fun prepare(zoneBase: CoordGrid, buildArea: CoordGrid): CoordGrid =
+            CoordGrid(
+                x = entity.southWestZoneX * ZoneGrid.LENGTH,
+                z = entity.southWestZoneZ * ZoneGrid.LENGTH,
+                level = entity.activeLevel,
+            )
+    }
+
+    private class ZoneWorldContext(private val player: Player, private val aboard: WorldEntity?) :
+        ZoneUpdateContext {
+        private var activeWorld: Int? = null
+
+        override fun prepare(zoneBase: CoordGrid, buildArea: CoordGrid): CoordGrid {
+            if (aboard == null) {
+                return buildArea
+            }
+            val zoneKey = ZoneKey.from(zoneBase)
+            val entityZone =
+                zoneKey.x in aboard.southWestZoneX until aboard.southWestZoneX + aboard.sizeX &&
+                    zoneKey.z in aboard.southWestZoneZ until aboard.southWestZoneZ + aboard.sizeZ &&
+                    zoneKey.level == aboard.activeLevel
+            val desiredWorld = if (entityZone) aboard.slotId else ROOT_WORLD
+            if (activeWorld != desiredWorld) {
+                if (entityZone) {
+                    player.client.write(
+                        SetActiveWorldV2(
+                            SetActiveWorldV2.DynamicWorldType(aboard.slotId, aboard.activeLevel),
+                        ),
+                    )
+                } else {
+                    player.client.write(SetActiveWorldV2.getRoot(zoneBase.level))
+                }
+                activeWorld = desiredWorld
+            }
+            return if (entityZone) {
+                CoordGrid(
+                    x = aboard.southWestZoneX * ZoneGrid.LENGTH,
+                    z = aboard.southWestZoneZ * ZoneGrid.LENGTH,
+                    level = aboard.activeLevel,
+                )
+            } else {
+                buildArea
+            }
+        }
+
+        override fun finish() {
+            if (aboard != null && activeWorld != null && activeWorld != ROOT_WORLD) {
+                player.client.write(SetActiveWorldV2.getRoot(player.coords.level))
+            }
+        }
+    }
+
+    private data class ZoneUpdatePlan(
+        val buildArea: CoordGrid,
+        val aboard: WorldEntity?,
+        val currZone: ZoneKey,
+        val zoneMoved: Boolean,
+        val allVisibleZones: IntList,
+        val newRootZones: IntList,
+        val newEntityZones: IntList,
+        val oldRootZones: IntList,
+        val oldEntityZones: IntList,
+    )
+
     public companion object {
+        private const val ROOT_WORLD: Int = -1
+
         public const val ZONE_VIEW_RADIUS: Int = 3
         public const val ZONE_VIEW_TOTAL_COUNT: Int =
             (2 * ZONE_VIEW_RADIUS + 1) * (2 * ZONE_VIEW_RADIUS + 1)

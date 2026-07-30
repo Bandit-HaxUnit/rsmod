@@ -2,7 +2,7 @@ package org.rsmod.api.net.rsprot.handlers
 
 import com.github.michaelbull.logging.InlineLogger
 import jakarta.inject.Inject
-import net.rsprot.protocol.game.incoming.objs.OpObj
+import net.rsprot.protocol.game.incoming.objs.OpObjV2
 import org.rsmod.api.player.interact.ObjInteractions
 import org.rsmod.api.player.protect.clearPendingAction
 import org.rsmod.api.player.vars.ctrlMoveSpeed
@@ -23,10 +23,10 @@ constructor(
     private val objTypes: ObjTypeList,
     private val objRegistry: ObjRegistry,
     private val objInteractions: ObjInteractions,
-) : MessageHandler<OpObj> {
+) : MessageHandler<OpObjV2> {
     private val logger = InlineLogger()
 
-    private val OpObj.interactionOp: InteractionOp
+    private val OpObjV2.interactionOp: InteractionOp
         get() =
             when (op) {
                 1 -> InteractionOp.Op1
@@ -37,7 +37,7 @@ constructor(
                 else -> throw NotImplementedError("Unhandled `op` conversion: $this")
             }
 
-    override fun handle(player: Player, message: OpObj) {
+    override fun handle(player: Player, message: OpObjV2) {
         if (player.isDelayed) {
             return
         }
@@ -45,12 +45,14 @@ constructor(
         val obj = findObj(player, coords, message.id) ?: return
         val type = objTypes[obj.type] ?: return
         val speed = if (message.controlKey) player.ctrlMoveSpeed() else null
-        val opTrigger = objInteractions.hasOpTrigger(obj, message.interactionOp, type)
+        val opTrigger =
+            objInteractions.hasOpTrigger(obj, message.interactionOp, type, message.subop)
         val apTrigger = objInteractions.hasApTrigger(obj, message.interactionOp, type)
         val interaction =
             InteractionObj(
                 target = obj,
                 op = message.interactionOp,
+                subop = message.subop,
                 hasOpTrigger = opTrigger,
                 hasApTrigger = apTrigger,
             )

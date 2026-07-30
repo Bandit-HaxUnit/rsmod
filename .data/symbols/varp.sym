@@ -1,3 +1,4 @@
+
 0	mcannon
 1	mcannonmulti
 2	dropcannon
@@ -2277,7 +2278,7 @@
 4844	slayer_misc
 4846	dom_previous_deepest_level
 4848	collection_count_unsynced
-
+5117	sailing_sidepanel_boat_type
 65504	music_playlist
 65505	music_temp_state_3
 65506	music_temp_state_2

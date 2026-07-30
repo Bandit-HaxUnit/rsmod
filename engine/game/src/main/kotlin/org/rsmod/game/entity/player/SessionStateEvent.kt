@@ -8,6 +8,9 @@ public class SessionStateEvent {
     /** Fired when a player is registered to the player list. */
     public data class Initialize(val player: Player) : UnboundEvent
 
+    /** Fired before the initial login map/info flush. */
+    public data class MapPrepare(val player: Player) : UnboundEvent
+
     /** Fired after [Initialize] during the player login sequence. */
     public data class Login(val player: Player) : UnboundEvent
 

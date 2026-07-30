@@ -29504,7 +29504,7 @@
 29503	fairyring_minorhub_last_alq
 29504	fairyring_minorhub_last_akp
 29505	fairyring_minorhub_last_aks
-29506	fairyring_minorhub_last_akr
+29506	sailing_boat_sail_kandarin_1x3_linen
 29507	fairyring_minorhub_last_akq
 29508	fairyring_minorhub_last_ajp
 29509	fairyring_minorhub_last_ajs
@@ -57688,3 +57688,10 @@
 57687	shutterwindow_offset
 57688	shutterwindow3_offset
 57689	bathmirror_small
+58526	bgsound_sailing_ocean_water_loop_01
+58568	randomsound_ardent_ocean_crashing_waves
+58569	randomsound_ardent_ocean_gulls
+59530	sailing_boat_sail_kandarin_1x3_wood
+59554	sailing_boat_steering_kandarin_1x3_wood
+59836	sailing_gangplank_the_pandemonium
+60245	sailing_boat_cargo_hold_regular_raft

@@ -564,7 +564,6 @@
 563	chatbored2
 564	chatbored3
 565	chatbored4
-566	shortchatneu1
 567	chathap1
 568	chathap2
 569	chathap3
@@ -577,7 +576,6 @@
 576	chatcon2
 577	chatcon3
 578	chatcon4
-579	chatidleneu1
 580	chatgoblin1
 581	chatgoblin2
 582	chatgoblin3
@@ -602,12 +600,10 @@
 601	chatdrunk2
 602	chatdrunk3
 603	chatdrunk4
-604	evilidle1
 605	chatlaugh1
 606	chatlaugh2
 607	chatlaugh3
 608	chatlaugh4
-609	evillaugh1
 610	chatsad1
 611	chatsad2
 612	chatsad3
@@ -8538,9 +8534,6 @@
 8539	league_trophy_glint_long_spot
 8540	league_trophy_dragon_firebreath
 8541	emote_explore
-8542	evillaugh_updated1
-8543	evillaugh_updated2
-8544	evilidle_updated3
 8545	nightmare_staff_volatile_hit
 8546	nightmare_staff_volatile_cast
 8547	nightmare_staff_eldritch_hit
@@ -12519,3 +12512,18 @@
 12525	human_walk_60
 12526	human_eat_withsound
 12527	human_stamp_merge
+13334	sailing_alpha_helm_raft01_inactive01
+13335	sailing_alpha_helm_raft01_active01
+13340	human_sailing_alpha_helm_raft01_active01
+13367	sailing_boat_sail_kandarin_1x3_down
+13368	sailing_boat_sail_kandarin_1x3_half_to_down
+13369	sailing_boat_sail_kandarin_1x3_full_to_down
+13370	sailing_boat_sail_kandarin_1x3_half
+13371	sailing_boat_sail_kandarin_1x3_down_to_half
+13374	sailing_boat_sail_kandarin_1x3_down_to_full
+13875	sailing_boat_sail_kandarin_1x3_down_offset
+13876	sailing_boat_sail_kandarin_1x3_half_to_down_offset
+13877	sailing_boat_sail_kandarin_1x3_full_to_down_offset
+13878	sailing_boat_sail_kandarin_1x3_half_offset
+13879	sailing_boat_sail_kandarin_1x3_down_to_half_offset
+13882	sailing_boat_sail_kandarin_1x3_down_to_full_offset

@@ -20,6 +20,7 @@ import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.player.vars.resyncVar
 import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.repo.npc.NpcRepository
+import org.rsmod.api.repo.worldentity.WorldEntityRepository
 import org.rsmod.api.type.symbols.name.NameMapping
 import org.rsmod.api.utils.format.formatAmount
 import org.rsmod.api.utils.system.SafeServiceExit
@@ -27,6 +28,7 @@ import org.rsmod.game.GameUpdate
 import org.rsmod.game.cheat.Cheat
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
+import org.rsmod.game.entity.WorldEntity
 import org.rsmod.game.entity.PlayerList
 import org.rsmod.game.entity.npc.NpcMode
 import org.rsmod.game.loc.LocAngle
@@ -69,10 +71,14 @@ constructor(
     private val varBitTypes: VarBitTypeList,
     private val locRepo: LocRepository,
     private val npcRepo: NpcRepository,
+    private val worldEntityRepo: WorldEntityRepository,
     private val names: NameMapping,
     private val update: GameUpdate,
 ) : PluginScript() {
     private val logger = InlineLogger()
+
+    /** Port Sarim sailing dock — tile beside The Pandemonium gangplank. */
+    private val pandemoniumDock = CoordGrid(x = 3069, z = 2987, level = 0)
 
     private val levenshteinMetric = StringMetrics.levenshtein()
 
@@ -86,6 +92,7 @@ constructor(
         onCommand("telezone", "Teleport to zone key", ::teleZone) {
             invalidArgs = "Use as ::telezone zoneX zoneY level (ex: 400 400 0)"
         }
+        onCommand("pandemonium", "Teleport to The Pandemonium at Port Sarim", ::telePandemonium)
         onCommand("anim", "Play animation", ::anim)
         onCommand("spot", "Play spotanim", ::spotanim) {
             invalidArgs = "Use as ::spot spotanimDebugNameOrId (ex: fx_emote_party01_active)"
@@ -97,6 +104,11 @@ constructor(
         onCommand("npcadd", "Spawn npc", ::npcAdd) {
             invalidArgs = "Use as ::npcadd duration npcDebugNameOrId (ex: 100 prison_pete)"
         }
+        onCommand("weadd", "Spawn world entity", ::worldEntityAdd) {
+            invalidArgs = "Use as ::weadd configTypeId (ex: ::weadd 351)"
+        }
+        onCommand("wedel", "Delete owned world entity", ::worldEntityDel)
+        onCommand("wedelall", "Delete all world entities", ::worldEntityDelAll)
         onCommand("invadd", "Spawn obj into inv", ::invAdd)
         onCommand("spawn", "Spawn obj into inv using item search", ::spawn)
         onCommand("invclear", "Remove all objs from inv", ::invClear)
@@ -149,6 +161,14 @@ constructor(
             protectedAccess.launch(player) {
                 player.mes("Teleported to $coords.")
                 telejump(coords)
+            }
+        }
+
+    private fun telePandemonium(cheat: Cheat) =
+        with(cheat) {
+            protectedAccess.launch(player) {
+                player.mes("Teleported to The Pandemonium (Port Sarim).")
+                telejump(pandemoniumDock)
             }
         }
 
@@ -252,6 +272,46 @@ constructor(
             npc.mode = NpcMode.None
             npcRepo.add(npc, duration)
             player.mes("Spawned npc `${type.internalName}` (duration: $duration cycles)")
+        }
+
+    private fun worldEntityAdd(cheat: Cheat) =
+        with(cheat) {
+            val typeId = args[0].toIntOrNull()
+            if (typeId == null) {
+                player.mes("Invalid world entity type id: `${args[0]}`")
+                return
+            }
+            val coords = player.coords
+            val entity =
+                WorldEntity(typeId = typeId, rootCoord = coords).apply {
+                    ownerPlayerSlot = player.slotId
+                    projectedLevel = coords.level
+                    southWestZoneX = (coords.x shr 3) - (sizeX / 2)
+                    southWestZoneZ = (coords.z shr 3) - (sizeZ / 2)
+                }
+            worldEntityRepo.add(entity)
+            player.mes(
+                "Spawned world entity type `$typeId` at slot `${entity.slotId}` " +
+                    "(swZone=${entity.southWestZoneX},${entity.southWestZoneZ})"
+            )
+        }
+
+    private fun worldEntityDel(cheat: Cheat) =
+        with(cheat) {
+            val entity =
+                worldEntityRepo.findByOwner(player.slotId)
+                    ?: run {
+                        player.mes("No owned world entity found.")
+                        return
+                    }
+            worldEntityRepo.del(entity)
+            player.mes("Deleted world entity `${entity.slotId}`.")
+        }
+
+    private fun worldEntityDelAll(cheat: Cheat) =
+        with(cheat) {
+            val count = worldEntityRepo.delAll()
+            player.mes("Deleted `$count` world entit${if (count == 1) "y" else "ies"}.")
         }
 
     private fun invAdd(cheat: Cheat) =

@@ -212,6 +212,8 @@ public class Player(
     public lateinit var inv: Inventory
     public lateinit var worn: Inventory
 
+    public fun hasInitializedInventories(): Boolean = ::inv.isInitialized && ::worn.isInitialized
+
     public var lastLogin: LocalDateTime = LocalDateTime.now()
 
     /*
@@ -233,6 +235,11 @@ public class Player(
     public var pendingLogout: Boolean = false
     public var loggingOut: Boolean = false
     public var pendingCloseClient: Boolean = false
+    /**
+     * Forces a world-entity hull rebuild on the next [org.rsmod.game.client.ClientCycle.flush].
+     * The rebuild is sent from [org.rsmod.api.net.rsprot.RspCycle] after `SetActiveWorld`.
+     */
+    public var pendingAboardWorldEntityRebuild: Boolean = false
     public var closeClient: Boolean = false
     /** This flag should only be set when the game server is in the process of shutting down. */
     public var pendingShutdown: Boolean = false

@@ -25,10 +25,10 @@ object BaseMesAnims : MesAnimBuilder() {
 
     val short =
         build("short") {
-            len1 = seqs.shortchatneu1
-            len2 = seqs.shortchatneu1
-            len3 = seqs.shortchatneu1
-            len4 = seqs.shortchatneu1
+            len1 = seqs.chatneu1
+            len2 = seqs.chatneu1
+            len3 = seqs.chatneu1
+            len4 = seqs.chatneu1
         }
 
     val happy =
@@ -57,10 +57,10 @@ object BaseMesAnims : MesAnimBuilder() {
 
     val silent =
         build("silent") {
-            len1 = seqs.chatidleneu1
-            len2 = seqs.chatidleneu1
-            len3 = seqs.chatidleneu1
-            len4 = seqs.chatidleneu1
+            len1 = seqs.chatneu1
+            len2 = seqs.chatneu1
+            len3 = seqs.chatneu1
+            len4 = seqs.chatneu1
         }
 
     val goblin =
@@ -105,10 +105,10 @@ object BaseMesAnims : MesAnimBuilder() {
 
     val very_mad =
         build("very_mad") {
-            len1 = seqs.evilidle1
-            len2 = seqs.evilidle1
-            len3 = seqs.evilidle1
-            len4 = seqs.evilidle1
+            len1 = seqs.chatang1
+            len2 = seqs.chatang1
+            len3 = seqs.chatang1
+            len4 = seqs.chatang1
         }
 
     val laugh =
@@ -121,10 +121,10 @@ object BaseMesAnims : MesAnimBuilder() {
 
     val mad_laugh =
         build("mad_laugh") {
-            len1 = seqs.evillaugh1
-            len2 = seqs.evillaugh1
-            len3 = seqs.evillaugh1
-            len4 = seqs.evillaugh1
+            len1 = seqs.chatlaugh1
+            len2 = seqs.chatlaugh1
+            len3 = seqs.chatlaugh1
+            len4 = seqs.chatlaugh1
         }
 
     val sad =

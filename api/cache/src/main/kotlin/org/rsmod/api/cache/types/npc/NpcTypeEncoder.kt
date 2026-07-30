@@ -54,10 +54,10 @@ public object NpcTypeEncoder {
     public fun encodeJs5(type: UnpackedNpcType, data: ByteBuf, ctx: EncoderContext): Unit =
         with(type) {
             if (models.isNotEmpty()) {
-                data.writeByte(1)
+                data.writeByte(61)
                 data.writeByte(models.size)
                 for (model in models) {
-                    data.writeShort(model)
+                    data.writeInt(model)
                 }
             }
 
@@ -133,10 +133,10 @@ public object NpcTypeEncoder {
             }
 
             if (head.isNotEmpty()) {
-                data.writeByte(60)
+                data.writeByte(62)
                 data.writeByte(head.size)
                 for (i in head.indices) {
-                    data.writeShort(head[i].toInt())
+                    data.writeInt(head[i].toInt())
                 }
             }
 

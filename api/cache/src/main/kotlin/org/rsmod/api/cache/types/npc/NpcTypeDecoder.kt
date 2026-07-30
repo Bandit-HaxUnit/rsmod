@@ -104,6 +104,18 @@ public object NpcTypeDecoder {
                     repeat(count) { models[it] = data.readUnsignedShort() }
                     this.head = CompactableIntArray(models)
                 }
+                61 -> {
+                    val count = data.readUnsignedByte().toInt()
+                    val models = IntArray(count)
+                    repeat(count) { models[it] = data.readInt() }
+                    this.models = CompactableIntArray(models)
+                }
+                62 -> {
+                    val count = data.readUnsignedByte().toInt()
+                    val models = IntArray(count)
+                    repeat(count) { models[it] = data.readInt() }
+                    this.head = CompactableIntArray(models)
+                }
                 74 -> attack = data.readUnsignedShort()
                 75 -> defence = data.readUnsignedShort()
                 76 -> strength = data.readUnsignedShort()
@@ -185,6 +197,9 @@ public object NpcTypeDecoder {
                     // Footprint size (newer client metadata, currently not modeled).
                     data.readUnsignedShort()
                 }
+                129 -> {
+                    // Unknown flag in newer cache revs (currently not modeled in `NpcType`).
+                }
                 130 -> {
                     // Ready-anim-during-anim toggle (currently not modeled).
                 }
@@ -238,6 +253,31 @@ public object NpcTypeDecoder {
                 214 -> heroCount = data.readUnsignedShort()
                 215 -> regenRate = data.readUnsignedShort()
                 216 -> huntMode = data.readUnsignedShortOrNull()
+                251 -> {
+                    // Sub-op menu option (currently not modeled in `NpcType`).
+                    data.readUnsignedByte()
+                    data.readUnsignedByte()
+                    data.readString()
+                }
+                252 -> {
+                    // Conditional op menu option (currently not modeled in `NpcType`).
+                    data.readUnsignedByte()
+                    data.readUnsignedShort()
+                    data.readUnsignedShort()
+                    data.readInt()
+                    data.readInt()
+                    data.readString()
+                }
+                253 -> {
+                    // Conditional sub-op menu option (currently not modeled in `NpcType`).
+                    data.readUnsignedByte()
+                    data.readUnsignedShort()
+                    data.readUnsignedShort()
+                    data.readUnsignedShort()
+                    data.readInt()
+                    data.readInt()
+                    data.readString()
+                }
                 249 -> paramMap = ParamMap(data.readRawParams())
                 else -> throw IOException("Error unrecognised .npc config code: $code")
             }

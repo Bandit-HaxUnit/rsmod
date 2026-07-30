@@ -50,6 +50,36 @@ public fun ScriptContext.onOpNpc5(
     action: suspend ProtectedAccess.(NpcEvents.Op5) -> Unit,
 ): Unit = onProtectedEvent(type.id, action)
 
+public fun ScriptContext.onOpNpc1Subop(
+    type: NpcType,
+    subop: Int,
+    action: suspend ProtectedAccess.(NpcEvents.SubOp1) -> Unit,
+): Unit = onProtectedEvent(EventBus.composeLongKey(type.id, subop), action)
+
+public fun ScriptContext.onOpNpc2Subop(
+    type: NpcType,
+    subop: Int,
+    action: suspend ProtectedAccess.(NpcEvents.SubOp2) -> Unit,
+): Unit = onProtectedEvent(EventBus.composeLongKey(type.id, subop), action)
+
+public fun ScriptContext.onOpNpc3Subop(
+    type: NpcType,
+    subop: Int,
+    action: suspend ProtectedAccess.(NpcEvents.SubOp3) -> Unit,
+): Unit = onProtectedEvent(EventBus.composeLongKey(type.id, subop), action)
+
+public fun ScriptContext.onOpNpc4Subop(
+    type: NpcType,
+    subop: Int,
+    action: suspend ProtectedAccess.(NpcEvents.SubOp4) -> Unit,
+): Unit = onProtectedEvent(EventBus.composeLongKey(type.id, subop), action)
+
+public fun ScriptContext.onOpNpc5Subop(
+    type: NpcType,
+    subop: Int,
+    action: suspend ProtectedAccess.(NpcEvents.SubOp5) -> Unit,
+): Unit = onProtectedEvent(EventBus.composeLongKey(type.id, subop), action)
+
 public fun ScriptContext.onOpNpc1(
     content: ContentGroupType,
     action: suspend ProtectedAccess.(NpcContentEvents.Op1) -> Unit,
@@ -74,6 +104,36 @@ public fun ScriptContext.onOpNpc5(
     content: ContentGroupType,
     action: suspend ProtectedAccess.(NpcContentEvents.Op5) -> Unit,
 ): Unit = onProtectedEvent(content.id, action)
+
+public fun ScriptContext.onOpNpc1Subop(
+    content: ContentGroupType,
+    subop: Int,
+    action: suspend ProtectedAccess.(NpcContentEvents.SubOp1) -> Unit,
+): Unit = onProtectedEvent(EventBus.composeLongKey(content.id, subop), action)
+
+public fun ScriptContext.onOpNpc2Subop(
+    content: ContentGroupType,
+    subop: Int,
+    action: suspend ProtectedAccess.(NpcContentEvents.SubOp2) -> Unit,
+): Unit = onProtectedEvent(EventBus.composeLongKey(content.id, subop), action)
+
+public fun ScriptContext.onOpNpc3Subop(
+    content: ContentGroupType,
+    subop: Int,
+    action: suspend ProtectedAccess.(NpcContentEvents.SubOp3) -> Unit,
+): Unit = onProtectedEvent(EventBus.composeLongKey(content.id, subop), action)
+
+public fun ScriptContext.onOpNpc4Subop(
+    content: ContentGroupType,
+    subop: Int,
+    action: suspend ProtectedAccess.(NpcContentEvents.SubOp4) -> Unit,
+): Unit = onProtectedEvent(EventBus.composeLongKey(content.id, subop), action)
+
+public fun ScriptContext.onOpNpc5Subop(
+    content: ContentGroupType,
+    subop: Int,
+    action: suspend ProtectedAccess.(NpcContentEvents.SubOp5) -> Unit,
+): Unit = onProtectedEvent(EventBus.composeLongKey(content.id, subop), action)
 
 public fun ScriptContext.onOpNpcT(
     component: ComponentType,

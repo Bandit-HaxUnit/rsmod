@@ -42,6 +42,36 @@ public fun ScriptContext.onOpLoc5(
     action: suspend ProtectedAccess.(LocEvents.Op5) -> Unit,
 ): Unit = onProtectedEvent(type.id, action)
 
+public fun ScriptContext.onOpLoc1Subop(
+    type: LocType,
+    subop: Int,
+    action: suspend ProtectedAccess.(LocEvents.SubOp1) -> Unit,
+): Unit = onProtectedEvent(EventBus.composeLongKey(type.id, subop), action)
+
+public fun ScriptContext.onOpLoc2Subop(
+    type: LocType,
+    subop: Int,
+    action: suspend ProtectedAccess.(LocEvents.SubOp2) -> Unit,
+): Unit = onProtectedEvent(EventBus.composeLongKey(type.id, subop), action)
+
+public fun ScriptContext.onOpLoc3Subop(
+    type: LocType,
+    subop: Int,
+    action: suspend ProtectedAccess.(LocEvents.SubOp3) -> Unit,
+): Unit = onProtectedEvent(EventBus.composeLongKey(type.id, subop), action)
+
+public fun ScriptContext.onOpLoc4Subop(
+    type: LocType,
+    subop: Int,
+    action: suspend ProtectedAccess.(LocEvents.SubOp4) -> Unit,
+): Unit = onProtectedEvent(EventBus.composeLongKey(type.id, subop), action)
+
+public fun ScriptContext.onOpLoc5Subop(
+    type: LocType,
+    subop: Int,
+    action: suspend ProtectedAccess.(LocEvents.SubOp5) -> Unit,
+): Unit = onProtectedEvent(EventBus.composeLongKey(type.id, subop), action)
+
 public fun ScriptContext.onOpLoc1(
     content: ContentGroupType,
     action: suspend ProtectedAccess.(LocContentEvents.Op1) -> Unit,
@@ -66,6 +96,36 @@ public fun ScriptContext.onOpLoc5(
     content: ContentGroupType,
     action: suspend ProtectedAccess.(LocContentEvents.Op5) -> Unit,
 ): Unit = onProtectedEvent(content.id, action)
+
+public fun ScriptContext.onOpLoc1Subop(
+    content: ContentGroupType,
+    subop: Int,
+    action: suspend ProtectedAccess.(LocContentEvents.SubOp1) -> Unit,
+): Unit = onProtectedEvent(EventBus.composeLongKey(content.id, subop), action)
+
+public fun ScriptContext.onOpLoc2Subop(
+    content: ContentGroupType,
+    subop: Int,
+    action: suspend ProtectedAccess.(LocContentEvents.SubOp2) -> Unit,
+): Unit = onProtectedEvent(EventBus.composeLongKey(content.id, subop), action)
+
+public fun ScriptContext.onOpLoc3Subop(
+    content: ContentGroupType,
+    subop: Int,
+    action: suspend ProtectedAccess.(LocContentEvents.SubOp3) -> Unit,
+): Unit = onProtectedEvent(EventBus.composeLongKey(content.id, subop), action)
+
+public fun ScriptContext.onOpLoc4Subop(
+    content: ContentGroupType,
+    subop: Int,
+    action: suspend ProtectedAccess.(LocContentEvents.SubOp4) -> Unit,
+): Unit = onProtectedEvent(EventBus.composeLongKey(content.id, subop), action)
+
+public fun ScriptContext.onOpLoc5Subop(
+    content: ContentGroupType,
+    subop: Int,
+    action: suspend ProtectedAccess.(LocContentEvents.SubOp5) -> Unit,
+): Unit = onProtectedEvent(EventBus.composeLongKey(content.id, subop), action)
 
 public fun ScriptContext.onOpLocT(
     component: ComponentType,

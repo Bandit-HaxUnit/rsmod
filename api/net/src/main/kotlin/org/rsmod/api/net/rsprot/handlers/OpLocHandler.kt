@@ -2,7 +2,7 @@ package org.rsmod.api.net.rsprot.handlers
 
 import com.github.michaelbull.logging.InlineLogger
 import jakarta.inject.Inject
-import net.rsprot.protocol.game.incoming.locs.OpLoc
+import net.rsprot.protocol.game.incoming.locs.OpLocV2
 import org.rsmod.api.player.interact.LocInteractions
 import org.rsmod.api.player.output.clearMapFlag
 import org.rsmod.api.player.protect.clearPendingAction
@@ -24,10 +24,10 @@ constructor(
     private val locTypes: LocTypeList,
     private val locRegistry: LocRegistry,
     private val locInteractions: LocInteractions,
-) : MessageHandler<OpLoc> {
+) : MessageHandler<OpLocV2> {
     private val logger = InlineLogger()
 
-    private val OpLoc.interactionOp: InteractionOp
+    private val OpLocV2.interactionOp: InteractionOp
         get() =
             when (op) {
                 1 -> InteractionOp.Op1
@@ -38,12 +38,16 @@ constructor(
                 else -> throw NotImplementedError("Unhandled `op` conversion: $this")
             }
 
-    override fun handle(player: Player, message: OpLoc) {
+    override fun handle(player: Player, message: OpLocV2) {
         if (player.isDelayed) {
             return
         }
-        val coords = CoordGrid(message.x, message.z, player.level)
-        val loc = locRegistry.findType(coords, message.id)
+        var coords = CoordGrid(message.x, message.z, player.level)
+        var loc = locRegistry.findType(coords, message.id)
+        if (loc == null && player.level != 0) {
+            coords = CoordGrid(message.x, message.z, 0)
+            loc = locRegistry.findType(coords, message.id)
+        }
         if (loc == null) {
             player.clearMapFlag()
             return
@@ -51,12 +55,20 @@ constructor(
         val type = locTypes[message.id] ?: return
         val speed = if (message.controlKey) player.ctrlMoveSpeed() else null
         val boundLoc = BoundLocInfo(loc, type)
-        val opTrigger = locInteractions.hasOpTrigger(player, boundLoc, message.interactionOp, type)
+        val opTrigger =
+            locInteractions.hasOpTrigger(
+                player,
+                boundLoc,
+                message.interactionOp,
+                type,
+                message.subop,
+            )
         val apTrigger = locInteractions.hasApTrigger(player, boundLoc, message.interactionOp, type)
         val interaction =
             InteractionLocOp(
                 target = boundLoc,
                 op = message.interactionOp,
+                subop = message.subop,
                 hasOpTrigger = opTrigger,
                 hasApTrigger = apTrigger,
             )
@@ -78,7 +90,7 @@ constructor(
         player.resetFaceEntity()
         player.faceLoc(loc, type.width, type.length)
         player.interaction = interaction
-        player.routeRequest = routeRequest
+        player.routeRequest = if (coords.level == player.level) routeRequest else null
         player.tempMoveSpeed = speed
         logger.debug { "OpLoc: op=${message.op}, loc=$boundLoc type=$type" }
     }

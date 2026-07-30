@@ -50,10 +50,10 @@ public object LocTypeEncoder {
     public fun encodeJs5(type: UnpackedLocType, data: ByteBuf, ctx: EncoderContext): Unit =
         with(type) {
             if (models.isNotEmpty() && shapes.isNotEmpty()) {
-                data.writeByte(1)
+                data.writeByte(6)
                 data.writeByte(models.size)
                 for (i in models.indices) {
-                    data.writeShort(models[i])
+                    data.writeInt(models[i])
                     data.writeByte(shapes[i].toInt())
                 }
             }
@@ -64,10 +64,10 @@ public object LocTypeEncoder {
             }
 
             if (models.isNotEmpty() && shapes.isEmpty()) {
-                data.writeByte(5)
+                data.writeByte(7)
                 data.writeByte(models.size)
                 for (model in models) {
-                    data.writeShort(model)
+                    data.writeInt(model)
                 }
             }
 

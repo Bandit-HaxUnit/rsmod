@@ -23,6 +23,7 @@ import org.rsmod.api.route.BoundValidator
 import org.rsmod.api.route.RayCastValidator
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Player
+import org.rsmod.game.entity.WorldEntityList
 import org.rsmod.game.interact.Interaction
 import org.rsmod.game.interact.InteractionLoc
 import org.rsmod.game.interact.InteractionLocOp
@@ -58,6 +59,7 @@ constructor(
     private val playerTInteractions: PlayerTInteractions,
     private val protectedAccess: ProtectedAccessLauncher,
     private val movement: PlayerMovementProcessor,
+    private val worldEntities: WorldEntityList,
 ) {
     public fun process(player: Player) {
         // Store the current interaction at this stage to ensure that if an interaction triggers a
@@ -238,14 +240,18 @@ constructor(
         }
 
     /* Loc interactions */
-    private fun Player.preMovementStep(interaction: InteractionLoc): InteractionStep =
-        Interactions.earlyStep(
+    private fun Player.preMovementStep(interaction: InteractionLoc): InteractionStep {
+        if (isWorldEntityProjectedLocOpRange(interaction)) {
+            return InteractionStep.TriggerScriptOp
+        }
+        return Interactions.earlyStep(
             target = InteractionTarget.Static,
             hasScriptOp = interaction.hasOpTrigger,
             hasScriptAp = interaction.hasApTrigger,
             validOpLine = isWithinOpRange(interaction),
             validApLine = isWithinApRange(interaction),
         )
+    }
 
     private fun Player.postMovementStep(interaction: InteractionLoc): InteractionStep =
         Interactions.lateStep(
@@ -257,9 +263,28 @@ constructor(
             validApLine = isWithinApRange(interaction),
         )
 
-    private fun Player.isWithinOpRange(interaction: InteractionLoc): Boolean =
-        boundValidator.collides(source = avatar, target = interaction.target) ||
+    private fun Player.isWithinOpRange(interaction: InteractionLoc): Boolean {
+        if (isWorldEntityProjectedLocOpRange(interaction)) {
+            return true
+        }
+        if (avatar.coords.level != interaction.target.coords.level) {
+            return false
+        }
+        return boundValidator.collides(source = avatar, target = interaction.target) ||
             boundValidator.touches(source = avatar, target = interaction.target)
+    }
+
+    /**
+     * While aboard a world entity, the client can op root-world locs (e.g. the mooring gangplank at
+     * [WorldEntity.projectedLevel]) without sharing the player's instance [CoordGrid.level].
+     */
+    private fun Player.isWorldEntityProjectedLocOpRange(interaction: InteractionLoc): Boolean {
+        if (!interaction.hasOpTrigger) {
+            return false
+        }
+        val aboard = worldEntities.firstOrNull { it.containsInstanceCoords(coords) } ?: return false
+        return interaction.target.coords.level == aboard.projectedLevel
+    }
 
     private fun Player.isWithinApRange(interaction: InteractionLoc): Boolean =
         isValidApRange(
@@ -460,7 +485,13 @@ constructor(
 
     /* Interaction event launch functions */
     public fun triggerOp(player: Player, interaction: InteractionLocOp) {
-        val op = locInteractions.opTrigger(player, interaction.target, interaction.op)
+        val op =
+            locInteractions.opTrigger(
+                player,
+                interaction.target,
+                interaction.op,
+                subop = interaction.subop,
+            )
         if (op != null) {
             protectedAccess.launch(player) { eventBus.publish(this, op) }
         }
@@ -496,7 +527,13 @@ constructor(
     }
 
     public fun triggerOp(player: Player, interaction: InteractionNpcOp) {
-        val op = npcInteractions.opTrigger(player, interaction.target, interaction.op)
+        val op =
+            npcInteractions.opTrigger(
+                player,
+                interaction.target,
+                interaction.op,
+                subop = interaction.subop,
+            )
         if (op != null) {
             protectedAccess.launch(player) { eventBus.publish(this, op) }
         }
@@ -532,7 +569,8 @@ constructor(
     }
 
     private fun triggerOp(player: Player, interaction: InteractionObj) {
-        val op = objInteractions.opTrigger(interaction.target, interaction.op)
+        val op =
+            objInteractions.opTrigger(interaction.target, interaction.op, subop = interaction.subop)
         if (op != null) {
             protectedAccess.launch(player) { eventBus.publish(this, op) }
         }

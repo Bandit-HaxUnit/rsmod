@@ -65,13 +65,26 @@ constructor(
         op: InteractionOp,
         type: UnpackedLocType = locTypes[loc],
         base: BoundLocInfo = loc,
+        subop: Int = 0,
     ): OpEvent? {
         val multiLoc = multiLoc(loc, type, player.vars)
         if (multiLoc != null) {
             val multiLocType = locTypes[multiLoc]
-            val multiLocTrigger = opTrigger(player, multiLoc, op, multiLocType, base)
+            val multiLocTrigger = opTrigger(player, multiLoc, op, multiLocType, base, subop)
             if (multiLocTrigger != null) {
                 return multiLocTrigger
+            }
+        }
+
+        if (subop > 0) {
+            val subOpEvent = toSubOp(base, loc, type, op, subop)
+            if (eventBus.contains(subOpEvent::class.java, subOpEvent.id)) {
+                return subOpEvent
+            }
+
+            val contentSubOpEvent = toContentSubOp(base, loc, type, type.contentGroup, op, subop)
+            if (eventBus.contains(contentSubOpEvent::class.java, contentSubOpEvent.id)) {
+                return contentSubOpEvent
             }
         }
 
@@ -102,7 +115,8 @@ constructor(
         loc: BoundLocInfo,
         op: InteractionOp,
         type: UnpackedLocType = locTypes[loc],
-    ): Boolean = opTrigger(player, loc, op, type) != null
+        subop: Int = 0,
+    ): Boolean = opTrigger(player, loc, op, type, subop = subop) != null
 
     public fun apTrigger(
         player: Player,
@@ -179,6 +193,37 @@ constructor(
             InteractionOp.Op3 -> LocEvents.Op3(base, vis, type)
             InteractionOp.Op4 -> LocEvents.Op4(base, vis, type)
             InteractionOp.Op5 -> LocEvents.Op5(base, vis, type)
+        }
+
+    private fun toSubOp(
+        base: BoundLocInfo,
+        vis: BoundLocInfo,
+        type: UnpackedLocType,
+        op: InteractionOp,
+        subop: Int,
+    ): LocEvents.SubOp =
+        when (op) {
+            InteractionOp.Op1 -> LocEvents.SubOp1(base, vis, type, subop)
+            InteractionOp.Op2 -> LocEvents.SubOp2(base, vis, type, subop)
+            InteractionOp.Op3 -> LocEvents.SubOp3(base, vis, type, subop)
+            InteractionOp.Op4 -> LocEvents.SubOp4(base, vis, type, subop)
+            InteractionOp.Op5 -> LocEvents.SubOp5(base, vis, type, subop)
+        }
+
+    private fun toContentSubOp(
+        base: BoundLocInfo,
+        vis: BoundLocInfo,
+        type: UnpackedLocType,
+        contentGroup: Int,
+        op: InteractionOp,
+        subop: Int,
+    ): LocContentEvents.SubOp =
+        when (op) {
+            InteractionOp.Op1 -> LocContentEvents.SubOp1(base, vis, type, contentGroup, subop)
+            InteractionOp.Op2 -> LocContentEvents.SubOp2(base, vis, type, contentGroup, subop)
+            InteractionOp.Op3 -> LocContentEvents.SubOp3(base, vis, type, contentGroup, subop)
+            InteractionOp.Op4 -> LocContentEvents.SubOp4(base, vis, type, contentGroup, subop)
+            InteractionOp.Op5 -> LocContentEvents.SubOp5(base, vis, type, contentGroup, subop)
         }
 
     private fun toContentOp(

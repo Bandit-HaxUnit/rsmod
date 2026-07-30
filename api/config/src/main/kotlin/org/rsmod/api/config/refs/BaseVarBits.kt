@@ -11,8 +11,8 @@ object BaseVarBits : VarBitReferences() {
     val singleway_plus_indicator = find("singleway_plus_indicator", 52603174350056)
 
     val stamina_active = find("stamina_active", 81145461762806)
-    val stamina_duration = find("stamina_duration", 14272015789523)
-    val stamina_duration_extra = find("stamina_duration_extra", 14272015867960)
+    val stamina_duration = find("stamina_duration", 14272015838872)
+    val stamina_duration_extra = find("stamina_duration_extra", 183001241918901)
     val buff_stamina_duration_disabled = find("buff_stamina_duration_disabled", 158374502904462)
 
     val side_journal_tab = find("side_journal_tab", 58785619230382)
@@ -42,7 +42,7 @@ object BaseVarBits : VarBitReferences() {
     val autocast_defmode = find("autocast_defmode", 22618316438405)
 
     val cutscene_status = find("cutscene_status", 52603174306817)
-    val fov_clamp = find("fov_clamp", 52603174314724)
+    val fov_clamp = find("fov_clamp", 52603174314785)
     val minimap_state = find("minimap_state", 52603174339590)
     val gravestone_tli_hide = find("gravestone_tli_hide", 87430947458308)
 
@@ -63,7 +63,7 @@ object BaseVarBits : VarBitReferences() {
     val skull_prevent = find("skull_prevent_enabled", 158426023294720)
     val option_acceptaid = find("option_acceptaid", 22000071917329)
     val has_displayname_transmitter = find("has_displayname_transmitter", 89491762451420)
-    val chatmodal_unclamp = find("chatmodal_unclamp", 52603174328291)
+    val chatmodal_unclamp = find("chatmodal_unclamp", 52603174400149)
     val option_hide_rooftops = find("option_hide_rooftops", 158374502976336)
     val settings_hd_beta_enabled = find("settings_hd_beta_enabled", 195520692873859)
     val settings_hd_beta_full_hd_or_fake_sd =

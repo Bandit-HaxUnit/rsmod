@@ -64,6 +64,23 @@ public object LocTypeDecoder {
                     repeat(count) { models[it] = data.readUnsignedShort() }
                     this.model = CompactableIntArray(models)
                 }
+                6 -> {
+                    val count = data.readUnsignedByte().toInt()
+                    val models = IntArray(count)
+                    val shapes = IntArray(count)
+                    repeat(count) {
+                        models[it] = data.readInt()
+                        shapes[it] = data.readUnsignedByte().toInt()
+                    }
+                    this.model = CompactableIntArray(models)
+                    this.modelShape = CompactableIntArray(shapes)
+                }
+                7 -> {
+                    val count = data.readUnsignedByte().toInt()
+                    val models = IntArray(count)
+                    repeat(count) { models[it] = data.readInt() }
+                    this.model = CompactableIntArray(models)
+                }
                 14 -> width = data.readUnsignedByte().toInt()
                 15 -> length = data.readUnsignedByte().toInt()
                 17 -> {
@@ -176,6 +193,34 @@ public object LocTypeDecoder {
                 96 -> {
                     // Additional raise/sound config in newer cache revs.
                     data.readUnsignedByte()
+                }
+                94 -> {
+                    // Unknown flag in newer cache revs (currently not modeled in `LocType`).
+                }
+                100 -> {
+                    // Sub-op menu option (currently not modeled in `LocType`).
+                    data.readUnsignedByte()
+                    data.readUnsignedByte()
+                    data.readString()
+                }
+                101 -> {
+                    // Conditional op menu option (currently not modeled in `LocType`).
+                    data.readUnsignedByte()
+                    data.readUnsignedShort()
+                    data.readUnsignedShort()
+                    data.readInt()
+                    data.readInt()
+                    data.readString()
+                }
+                102 -> {
+                    // Conditional sub-op menu option (currently not modeled in `LocType`).
+                    data.readUnsignedByte()
+                    data.readUnsignedShort()
+                    data.readUnsignedShort()
+                    data.readUnsignedShort()
+                    data.readInt()
+                    data.readInt()
+                    data.readString()
                 }
                 200 -> contentGroup = data.readUnsignedShort()
                 249 -> paramMap = ParamMap(data.readRawParams())

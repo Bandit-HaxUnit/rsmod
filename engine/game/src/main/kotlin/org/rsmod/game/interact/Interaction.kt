@@ -46,6 +46,7 @@ public sealed class InteractionLoc(
 
 public class InteractionLocOp(
     public val op: InteractionOp,
+    public val subop: Int = 0,
     target: BoundLocInfo,
     hasOpTrigger: Boolean,
     hasApTrigger: Boolean,
@@ -87,6 +88,7 @@ public sealed class InteractionNpc(
 
 public class InteractionNpcOp(
     public val op: InteractionOp,
+    public val subop: Int = 0,
     target: Npc,
     hasOpTrigger: Boolean,
     hasApTrigger: Boolean,
@@ -106,6 +108,7 @@ public class InteractionNpcT(
 public class InteractionObj(
     public val target: Obj,
     public val op: InteractionOp,
+    public val subop: Int = 0,
     hasOpTrigger: Boolean,
     hasApTrigger: Boolean,
     startApRange: Int = PathingEntity.DEFAULT_AP_RANGE,

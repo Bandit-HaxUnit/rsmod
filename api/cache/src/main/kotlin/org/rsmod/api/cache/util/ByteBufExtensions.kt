@@ -73,6 +73,11 @@ public fun ByteBuf.writeNullableShort(value: Int?): ByteBuf {
     return this
 }
 
+public fun ByteBuf.readIntOrNull(): Int? {
+    val value = readInt()
+    return if (value == -1) null else value
+}
+
 public fun ByteBuf.readUnsignedShortOrNull(): Int? {
     val value = readUnsignedShort()
     return if (value == 65535) null else value

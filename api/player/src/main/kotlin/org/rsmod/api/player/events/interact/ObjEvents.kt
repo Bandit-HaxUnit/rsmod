@@ -1,5 +1,6 @@
 package org.rsmod.api.player.events.interact
 
+import org.rsmod.events.EventBus
 import org.rsmod.game.obj.Obj
 
 public sealed class ObjEvents {
@@ -16,6 +17,19 @@ public sealed class ObjEvents {
     public class Op5(obj: Obj) : Op(obj)
 
     public class Op6(obj: Obj) : Op(obj)
+
+    public sealed class SubOp(public val obj: Obj, public val subop: Int) :
+        OpEvent(EventBus.composeLongKey(obj.type, subop))
+
+    public class SubOp1(obj: Obj, subop: Int) : SubOp(obj, subop)
+
+    public class SubOp2(obj: Obj, subop: Int) : SubOp(obj, subop)
+
+    public class SubOp3(obj: Obj, subop: Int) : SubOp(obj, subop)
+
+    public class SubOp4(obj: Obj, subop: Int) : SubOp(obj, subop)
+
+    public class SubOp5(obj: Obj, subop: Int) : SubOp(obj, subop)
 
     public sealed class Ap(public val obj: Obj) : ApEvent(obj.type.toLong())
 
@@ -44,6 +58,19 @@ public sealed class ObjContentEvents {
     public class Op5(obj: Obj, content: Int) : Op(obj, content)
 
     public class Op6(obj: Obj, content: Int) : Op(obj, content)
+
+    public sealed class SubOp(public val obj: Obj, contentGroup: Int, public val subop: Int) :
+        OpEvent(EventBus.composeLongKey(contentGroup, subop))
+
+    public class SubOp1(obj: Obj, content: Int, subop: Int) : SubOp(obj, content, subop)
+
+    public class SubOp2(obj: Obj, content: Int, subop: Int) : SubOp(obj, content, subop)
+
+    public class SubOp3(obj: Obj, content: Int, subop: Int) : SubOp(obj, content, subop)
+
+    public class SubOp4(obj: Obj, content: Int, subop: Int) : SubOp(obj, content, subop)
+
+    public class SubOp5(obj: Obj, content: Int, subop: Int) : SubOp(obj, content, subop)
 
     public sealed class Ap(public val obj: Obj, contentGroup: Int) : ApEvent(contentGroup.toLong())
 

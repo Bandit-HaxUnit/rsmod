@@ -5,7 +5,7 @@ import org.rsmod.api.type.refs.varbit.VarBitReferences
 typealias canoe_varbits = CanoeVarBits
 
 object CanoeVarBits : VarBitReferences() {
-    val current_station = find("canoe_startfrom", 34776280224821)
+    val current_station = find("canoe_startfrom", 282384043935977)
     val lumbridge_state = find("canoestation_state_lumbridge", 34724759786281)
     val champs_guild_state = find("canoestation_state_championsguild", 34724759816538)
     val barb_village_state = find("canoestation_state_barbarianvillage", 34724759846795)

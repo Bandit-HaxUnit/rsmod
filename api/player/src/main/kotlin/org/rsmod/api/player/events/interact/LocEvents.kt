@@ -36,6 +36,28 @@ public sealed class LocEvents {
     public class Op5(loc: BoundLocInfo, vis: BoundLocInfo, type: UnpackedLocType) :
         Op(loc, vis, type)
 
+    public sealed class SubOp(
+        public val loc: BoundLocInfo,
+        public val vis: BoundLocInfo,
+        public val type: UnpackedLocType,
+        public val subop: Int,
+    ) : OpEvent(EventBus.composeLongKey(type.id, subop))
+
+    public class SubOp1(loc: BoundLocInfo, vis: BoundLocInfo, type: UnpackedLocType, subop: Int) :
+        SubOp(loc, vis, type, subop)
+
+    public class SubOp2(loc: BoundLocInfo, vis: BoundLocInfo, type: UnpackedLocType, subop: Int) :
+        SubOp(loc, vis, type, subop)
+
+    public class SubOp3(loc: BoundLocInfo, vis: BoundLocInfo, type: UnpackedLocType, subop: Int) :
+        SubOp(loc, vis, type, subop)
+
+    public class SubOp4(loc: BoundLocInfo, vis: BoundLocInfo, type: UnpackedLocType, subop: Int) :
+        SubOp(loc, vis, type, subop)
+
+    public class SubOp5(loc: BoundLocInfo, vis: BoundLocInfo, type: UnpackedLocType, subop: Int) :
+        SubOp(loc, vis, type, subop)
+
     /**
      * @param loc The _base_ loc target of the event.
      * @param vis The current _visual_ representation of [loc], based on the player's varps. If
@@ -94,6 +116,54 @@ public sealed class LocContentEvents {
 
     public class Op5(loc: BoundLocInfo, vis: BoundLocInfo, type: UnpackedLocType, content: Int) :
         Op(loc, vis, type, content)
+
+    public sealed class SubOp(
+        public val loc: BoundLocInfo,
+        public val vis: BoundLocInfo,
+        public val type: UnpackedLocType,
+        content: Int,
+        public val subop: Int,
+    ) : OpEvent(EventBus.composeLongKey(content, subop))
+
+    public class SubOp1(
+        loc: BoundLocInfo,
+        vis: BoundLocInfo,
+        type: UnpackedLocType,
+        content: Int,
+        subop: Int,
+    ) : SubOp(loc, vis, type, content, subop)
+
+    public class SubOp2(
+        loc: BoundLocInfo,
+        vis: BoundLocInfo,
+        type: UnpackedLocType,
+        content: Int,
+        subop: Int,
+    ) : SubOp(loc, vis, type, content, subop)
+
+    public class SubOp3(
+        loc: BoundLocInfo,
+        vis: BoundLocInfo,
+        type: UnpackedLocType,
+        content: Int,
+        subop: Int,
+    ) : SubOp(loc, vis, type, content, subop)
+
+    public class SubOp4(
+        loc: BoundLocInfo,
+        vis: BoundLocInfo,
+        type: UnpackedLocType,
+        content: Int,
+        subop: Int,
+    ) : SubOp(loc, vis, type, content, subop)
+
+    public class SubOp5(
+        loc: BoundLocInfo,
+        vis: BoundLocInfo,
+        type: UnpackedLocType,
+        content: Int,
+        subop: Int,
+    ) : SubOp(loc, vis, type, content, subop)
 
     /**
      * @param loc The _base_ loc target of the event.

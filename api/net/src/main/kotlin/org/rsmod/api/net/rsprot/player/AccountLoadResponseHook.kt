@@ -111,12 +111,16 @@ class AccountLoadResponseHook(
         // character row was created, but their game state was never saved due to a crash before
         // the save could occur (either via logout or another persistence mechanism).
         val isPartialSave = response.account.lastLogout == null
-        if (isPartialSave) {
+        if (isPartialSave && !config.devMode) {
             logger.error {
                 "Player has never logged out properly - login aborted: ${response.account}"
             }
             writeErrorResponse(LoginResponse.InvalidSave)
             return
+        } else if (isPartialSave) {
+            logger.warn {
+                "Loading partial-save account in dev mode: ${response.account.loginName}"
+            }
         }
 
         safeQueueLogin(response)
@@ -240,9 +244,17 @@ class AccountLoadResponseHook(
         }
 
         val response = player.createLoginResponse(slotId, loadResponse.auth)
+        logger.info { "Login accepted for '${player.username}' (slot=$slotId)." }
         val session = channelResponses.writeSuccessfulResponse(response, loginBlock)
 
-        val disconnectionHook = Runnable { player.clientDisconnected.set(true) }
+        val disconnectionHook = Runnable {
+            player.clientDisconnected.set(true)
+            logger.warn {
+                "Client disconnected for '${player.username}' " +
+                    "(slot=${player.slotId}, coords=${player.coords}, " +
+                    "buildArea=${player.buildArea})"
+            }
+        }
         session.setDisconnectionHook(disconnectionHook)
 
         // `setDisconnectionHook` will invoke the disconnection hook instantly if the session
@@ -254,10 +266,13 @@ class AccountLoadResponseHook(
 
         player.slotId = slotId
         eventBus.publish(SessionStart(player, session))
+        eventBus.publish(SessionStateEvent.MapPrepare(player))
+        eventBus.publish(SessionLoginFlush(player))
         val register = playerRegistry.add(player)
         if (register.isSuccess()) {
             eventBus.publish(SessionStateEvent.Login(player))
             eventBus.publish(SessionStateEvent.EngineLogin(player))
+            eventBus.publish(SessionLoginFinish(player))
             return
         }
         logger.warn { "Failed to register player: $register (player=$player)" }

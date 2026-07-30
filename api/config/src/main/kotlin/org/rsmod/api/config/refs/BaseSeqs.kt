@@ -24,7 +24,7 @@ object BaseSeqs : SeqReferences() {
     val human_reachforladder = find("human_reachforladder", 5950979418546357048)
     val human_pickuptable = find("human_pickuptable", 3590832051552122083)
     val human_shearing = find("human_shearing", 8525764736895195917)
-    val milkit = find("milkit", 8837273620997483727)
+    val milkit = find("milkit", 8837273620997483666)
     val poh_smash_magic_tablet = find("poh_smash_magic_tablet", 2922113110586613810)
     val poh_absorb_tablet_teleport = find("poh_absorb_tablet_teleport", 762546241074929929)
 
@@ -63,8 +63,6 @@ object BaseSeqs : SeqReferences() {
     val chatbored3 = find("chatbored3", 2855845013378719254)
     val chatbored4 = find("chatbored4", 6390690700797956461)
 
-    val shortchatneu1 = find("shortchatneu1", 4928204021908074833)
-
     val chathap1 = find("chathap1", 518974689035921103)
     val chathap2 = find("chathap2", 6491247634177165712)
     val chathap3 = find("chathap3", 2350232406901381457)
@@ -79,8 +77,6 @@ object BaseSeqs : SeqReferences() {
     val chatcon2 = find("chatcon2", 5112437928026442136)
     val chatcon3 = find("chatcon3", 5953344864592866179)
     val chatcon4 = find("chatcon4", 2031426467868600442)
-
-    val chatidleneu1 = find("chatidleneu1", 9084901231231433307)
 
     val chatgoblin1 = find("chatgoblin1", 7053395834347999580)
     val chatgoblin2 = find("chatgoblin2", 899441770847315613)
@@ -107,14 +103,10 @@ object BaseSeqs : SeqReferences() {
     val chatdrunk3 = find("chatdrunk3", 5255689722970598204)
     val chatdrunk4 = find("chatdrunk4", 2446437895096883699)
 
-    val evilidle1 = find("evilidle1", 7636584275680993306)
-
     val chatlaugh1 = find("chatlaugh1", 1584912924926806901)
     val chatlaugh2 = find("chatlaugh2", 2995533040331466422)
     val chatlaugh3 = find("chatlaugh3", 7208091217571449591)
     val chatlaugh4 = find("chatlaugh4", 4470472401776028760)
-
-    val evillaugh1 = find("evillaugh1", 662581669199495199)
 
     val chatsad1 = find("chatsad1", 7051211105694761338)
     val chatsad2 = find("chatsad2", 1267741238741621307)

@@ -24,6 +24,7 @@ constructor(
     private val runUpdates: PlayerRunUpdateProcessor,
     private val invUpdates: PlayerInvUpdateProcessor,
     private val statUpdates: PlayerStatUpdateProcessor,
+    private val worldMap: WorldMapPlayerProcessor,
     private val exceptionHandler: GameExceptionHandler,
 ) {
     public fun process() {
@@ -53,8 +54,8 @@ constructor(
         for (player in playerList) {
             player.tryOrDisconnect {
                 processMapChanges()
+                worldMap.process(this)
                 processClientCycle()
-                processZoneUpdates()
                 processInvUpdates()
                 processStatUpdates()
                 processRunUpdates()
@@ -74,10 +75,9 @@ constructor(
             return
         }
         clientCycle.flush(this)
-    }
-
-    private fun Player.processZoneUpdates() {
-        zoneUpdates.process(this)
+        if (!clientCycle.managesZoneUpdateFlush) {
+            zoneUpdates.process(this)
+        }
     }
 
     private fun Player.processInvUpdates() {

@@ -6,5 +6,5 @@ typealias canoe_interfaces = CanoeInterfaces
 
 object CanoeInterfaces : InterfaceReferences() {
     val shaping = find("canoeing", 1848119790)
-    val destination = find("canoe_map", 371484599)
+    val destination = find("canoe_map", 1519228893)
 }

@@ -46,7 +46,7 @@ object EquipmentTabComponents : ComponentReferences() {
 }
 
 object EquipmentTabInterfaces : InterfaceReferences() {
-    val equipment_stats_main = find("equipment", 56068798)
+    val equipment_stats_main = find("equipment", 187515252)
     val equipment_stats_side = find("equipment_side", 118973798)
     val guide_prices_main = find("ge_pricechecker", 1786273493)
     val guide_prices_side = find("ge_pricechecker_side", 9223372034789267669)

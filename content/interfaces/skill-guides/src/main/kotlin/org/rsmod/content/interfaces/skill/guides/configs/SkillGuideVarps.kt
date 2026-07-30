@@ -1,10 +1,9 @@
 package org.rsmod.content.interfaces.skill.guides.configs
 
-import org.rsmod.api.type.refs.varbit.VarBitReferences
+import org.rsmod.api.type.refs.varp.VarpReferences
 
-typealias guide_varbits = SkillGuideVarBits
+typealias guide_varps = SkillGuideVarps
 
-object SkillGuideVarBits : VarBitReferences() {
-    val selected_skill = find("skill_guide_skill", 49718033324287)
-    val selected_subsection = find("skill_guide_subsection", 49718033361803)
+object SkillGuideVarps : VarpReferences() {
+    val selected_skill = find("skill_guide_v2")
 }

@@ -20,9 +20,12 @@ public object ClientScriptTypeDecoder {
     private const val OPCODE_RETURN = 21
     private const val OPCODE_POP_INT_DISCARD = 38
     private const val OPCODE_POP_STRING_DISCARD = 39
+    private const val OPCODE_PUSH_CONSTANT_LONG = 61
+    private const val OPCODE_POP_LONG_DISCARD = 62
     private const val OPCODE_PUSH_CONSTANT_NULL = 63
 
     private const val CORE_OPCODE_LIMIT = 100
+    private const val FOOTER_SIZE = 16
 
     public fun decodeAll(cache: Cache): ClientScriptTypeList {
         val types = Int2ObjectOpenHashMap<UnpackedClientScriptType>()
@@ -48,7 +51,8 @@ public object ClientScriptTypeDecoder {
     public fun decode(builder: ClientScriptTypeBuilder, data: ByteBuf): Unit =
         with(builder) {
             val switchDataLength = data.getUnsignedShort(data.writerIndex() - Short.SIZE_BYTES)
-            val commandEndPosition = data.writerIndex() - Short.SIZE_BYTES - switchDataLength - 12
+            val commandEndPosition =
+                data.writerIndex() - Short.SIZE_BYTES - switchDataLength - FOOTER_SIZE
             data.readerIndex(commandEndPosition)
 
             val commandCount = data.readInt()
@@ -58,8 +62,10 @@ public object ClientScriptTypeDecoder {
 
             val intLocalCount = data.readUnsignedShort()
             val stringLocalCount = data.readUnsignedShort()
+            data.readUnsignedShort() // long local count (rev 237+)
             val intArgumentCount = data.readUnsignedShort()
             val stringArgumentCount = data.readUnsignedShort()
+            data.readUnsignedShort() // long argument count (rev 237+)
             val switchCount = data.readUnsignedByte().toInt()
 
             val switches =
@@ -87,8 +93,12 @@ public object ClientScriptTypeDecoder {
                     OPCODE_RETURN,
                     OPCODE_POP_INT_DISCARD,
                     OPCODE_POP_STRING_DISCARD,
+                    OPCODE_POP_LONG_DISCARD,
                     OPCODE_PUSH_CONSTANT_NULL -> {
                         intOperands[index] = data.readUnsignedByte().toInt()
+                    }
+                    OPCODE_PUSH_CONSTANT_LONG -> {
+                        data.readLong()
                     }
                     else -> {
                         if (command < CORE_OPCODE_LIMIT) {

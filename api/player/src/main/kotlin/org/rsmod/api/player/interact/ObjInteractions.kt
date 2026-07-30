@@ -40,7 +40,20 @@ constructor(private val objTypes: ObjTypeList, private val eventBus: EventBus) {
         obj: Obj,
         op: InteractionOp,
         type: UnpackedObjType = objTypes[obj],
+        subop: Int = 0,
     ): OpEvent? {
+        if (subop > 0) {
+            val subOpEvent = obj.toSubOp(op, subop)
+            if (eventBus.contains(subOpEvent::class.java, subOpEvent.id)) {
+                return subOpEvent
+            }
+
+            val contentSubOpEvent = obj.toContentSubOp(type.contentGroup, op, subop)
+            if (eventBus.contains(contentSubOpEvent::class.java, contentSubOpEvent.id)) {
+                return contentSubOpEvent
+            }
+        }
+
         val typeEvent = obj.toOp(op)
         if (eventBus.contains(typeEvent::class.java, type.id)) {
             return typeEvent
@@ -63,7 +76,8 @@ constructor(private val objTypes: ObjTypeList, private val eventBus: EventBus) {
         obj: Obj,
         op: InteractionOp,
         type: UnpackedObjType = objTypes[obj],
-    ): Boolean = opTrigger(obj, op, type) != null
+        subop: Int = 0,
+    ): Boolean = opTrigger(obj, op, type, subop) != null
 
     public fun apTrigger(
         obj: Obj,
@@ -103,6 +117,15 @@ constructor(private val objTypes: ObjTypeList, private val eventBus: EventBus) {
             InteractionOp.Op5 -> ObjEvents.Op5(this)
         }
 
+    private fun Obj.toSubOp(op: InteractionOp, subop: Int): ObjEvents.SubOp =
+        when (op) {
+            InteractionOp.Op1 -> ObjEvents.SubOp1(this, subop)
+            InteractionOp.Op2 -> ObjEvents.SubOp2(this, subop)
+            InteractionOp.Op3 -> ObjEvents.SubOp3(this, subop)
+            InteractionOp.Op4 -> ObjEvents.SubOp4(this, subop)
+            InteractionOp.Op5 -> ObjEvents.SubOp5(this, subop)
+        }
+
     private fun Obj.toContentOp(contentGroup: Int, op: InteractionOp): ObjContentEvents.Op =
         when (op) {
             InteractionOp.Op1 -> ObjContentEvents.Op1(this, contentGroup)
@@ -110,6 +133,19 @@ constructor(private val objTypes: ObjTypeList, private val eventBus: EventBus) {
             InteractionOp.Op3 -> ObjContentEvents.Op3(this, contentGroup)
             InteractionOp.Op4 -> ObjContentEvents.Op4(this, contentGroup)
             InteractionOp.Op5 -> ObjContentEvents.Op5(this, contentGroup)
+        }
+
+    private fun Obj.toContentSubOp(
+        contentGroup: Int,
+        op: InteractionOp,
+        subop: Int,
+    ): ObjContentEvents.SubOp =
+        when (op) {
+            InteractionOp.Op1 -> ObjContentEvents.SubOp1(this, contentGroup, subop)
+            InteractionOp.Op2 -> ObjContentEvents.SubOp2(this, contentGroup, subop)
+            InteractionOp.Op3 -> ObjContentEvents.SubOp3(this, contentGroup, subop)
+            InteractionOp.Op4 -> ObjContentEvents.SubOp4(this, contentGroup, subop)
+            InteractionOp.Op5 -> ObjContentEvents.SubOp5(this, contentGroup, subop)
         }
 
     private fun Obj.toDefaultOp(op: InteractionOp): ObjDefaultEvents.Op =

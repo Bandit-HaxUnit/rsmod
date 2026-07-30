@@ -5,6 +5,7 @@ import org.openrs2.cache.Cache
 import org.rsmod.api.cache.Js5Archives
 import org.rsmod.api.cache.enricher.map.area.AreaCacheEnricher
 import org.rsmod.api.cache.enricher.map.area.EnrichedAreaConfig
+import org.rsmod.api.cache.map.MapGroupFileLayoutDetector
 import org.rsmod.api.cache.map.area.MapAreaDecoder
 import org.rsmod.api.cache.map.area.MapAreaDefinition
 import org.rsmod.api.cache.map.area.MapAreaEncoder
@@ -46,8 +47,14 @@ constructor(
         val areas = mutableMapOf<MapSquareKey, MapAreaDefinition>()
         for (config in this) {
             val (mx, mz) = config.square
-            val buffer = cache.readOrNull(Js5Archives.MAPS, "a${mx}_$mz") ?: continue
-            val area = MapAreaDecoder.decode(buffer.toInlineBuf())
+            val legacy = cache.readOrNull(Js5Archives.MAPS, "a${mx}_$mz")
+            val grouped =
+                MapGroupFileLayoutDetector.detect(cache).area?.let { areaFile ->
+                    cache.readOrNull(Js5Archives.MAPS, config.square.id, file = areaFile)
+                }
+            val buffer = legacy ?: grouped ?: continue
+            val area =
+                runCatching { MapAreaDecoder.decode(buffer.toInlineBuf()) }.getOrNull() ?: continue
             areas[config.square] = area
         }
         return areas

@@ -8,7 +8,7 @@ internal typealias prayer_components = PrayerTabComponents
 internal typealias prayer_interfaces = PrayerTabInterfaces
 
 object PrayerTabComponents : ComponentReferences() {
-    val quick_prayers_orb = find("orbs:prayerbutton", 6559444023822024569)
+    val quick_prayers_orb = find("orbs:prayerbutton", 4734157157513446650)
     val quick_prayers_close = find("quickprayer:close", 665436969762071494)
     val quick_prayers_setup = find("quickprayer:buttons", 3047365150244200707)
     val filters = find("prayerbook:filtermenu", 1348928103225883074)

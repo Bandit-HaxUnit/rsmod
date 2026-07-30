@@ -7,6 +7,7 @@ import org.openrs2.buffer.use
 import org.openrs2.cache.Cache
 import org.rsmod.api.cache.Js5Archives
 import org.rsmod.api.cache.util.TextUtil
+import org.rsmod.api.cache.util.readIntOrNull
 import org.rsmod.api.cache.util.readUnsignedShortOrNull
 import org.rsmod.game.type.TypeResolver
 import org.rsmod.game.type.comp.ComponentTypeBuilder
@@ -129,10 +130,10 @@ public object ComponentTypeDecoder {
 
             if (type == 6) {
                 modelKind = 1
-                model = data.readUnsignedShortOrNull()
+                model = data.readIntOrNull()
 
                 secondaryModelKind = 1
-                secondaryModel = data.readUnsignedShortOrNull()
+                secondaryModel = data.readIntOrNull()
 
                 modelAnim = data.readUnsignedShortOrNull()
                 secondaryModelAnim = data.readUnsignedShortOrNull()
@@ -232,7 +233,7 @@ public object ComponentTypeDecoder {
 
             if (type == 6) {
                 modelKind = 1
-                model = data.readUnsignedShortOrNull()
+                model = data.readIntOrNull()
 
                 modelX = data.readShort().toInt()
                 modelY = data.readShort().toInt()
@@ -334,6 +335,9 @@ public object ComponentTypeDecoder {
     }
 
     public fun decodeHookTransmitList(data: ByteBuf): IntArray? {
+        if (!data.isReadable) {
+            return null
+        }
         val count = data.readUnsignedByte().toInt()
         if (count == 0) {
             return null

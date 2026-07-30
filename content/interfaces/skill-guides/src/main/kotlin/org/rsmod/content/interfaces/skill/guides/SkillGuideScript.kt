@@ -5,18 +5,15 @@ import org.rsmod.api.player.protect.ProtectedAccessLauncher
 import org.rsmod.api.player.ui.ifClose
 import org.rsmod.api.player.ui.ifCloseSub
 import org.rsmod.api.player.ui.ifOpenOverlay
-import org.rsmod.api.player.ui.ifSetEvents
-import org.rsmod.api.player.vars.intVarBit
+import org.rsmod.api.player.vars.intVarp
 import org.rsmod.api.script.onIfOverlayButton
 import org.rsmod.content.interfaces.skill.guides.configs.guide_components
 import org.rsmod.content.interfaces.skill.guides.configs.guide_enums
 import org.rsmod.content.interfaces.skill.guides.configs.guide_interfaces
-import org.rsmod.content.interfaces.skill.guides.configs.guide_varbits
+import org.rsmod.content.interfaces.skill.guides.configs.guide_varps
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Player
-import org.rsmod.game.type.comp.HashedComponentType
 import org.rsmod.game.enums.EnumTypeMapResolver
-import org.rsmod.game.ui.Component
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -29,52 +26,26 @@ constructor(
 ) : PluginScript() {
     override fun ScriptContext.startup() {
         val mappedTabButtons = enumResolver[guide_enums.open_buttons].filterValuesNotNull()
-        for ((button, varbit) in mappedTabButtons) {
-            onIfOverlayButton(button) { player.selectGuide(varbit) }
-        }
-
-        val mappedSubsections = enumResolver[guide_enums.subsection_buttons].filterValuesNotNull()
-        for ((button, varbit) in mappedSubsections) {
-            onIfOverlayButton(button) { player.changeSubsection(varbit) }
+        for ((button, skill) in mappedTabButtons) {
+            onIfOverlayButton(button) { player.selectGuide(skill) }
         }
 
         onIfOverlayButton(guide_components.close_button) { player.closeGuide() }
-
-        val fallbackCloseButton =
-            HashedComponentType(
-                startHash = null,
-                internalName = "skill_guide:close_fallback",
-                internalId = Component(guide_interfaces.skill_guide.id, 31).packed,
-            )
-        if (fallbackCloseButton.packed != guide_components.close_button.packed) {
-            onIfOverlayButton(fallbackCloseButton) { player.closeGuide() }
-        }
     }
 
-    private fun Player.selectGuide(guideVarBit: Int) {
+    private fun Player.selectGuide(skill: Int) {
         ifClose(eventBus)
-        protectedAccess.launch(this) { openGuide(guideVarBit, sectionVar = 0) }
+        protectedAccess.launch(this) { openGuide(skill) }
     }
 
-    private fun Player.openGuide(skillVar: Int, sectionVar: Int) {
-        selectedSkill = skillVar
-        selectedSubsection = sectionVar
-        ifOpenOverlay(guide_interfaces.skill_guide, eventBus)
-        // Note: This is for the "Check _" left-click options on subsection entries. As of the
-        // moment of writing this, only construction handles this server-side. (Magic handles it
-        // entirely through cs2) We do not currently have the construction data in order to send
-        // the corresponding message for these ops, so we stick to never enabling them.
-        ifSetEvents(guide_components.subsection_entry_list, 0..99)
-    }
-
-    private fun Player.changeSubsection(sectionVar: Int) {
-        openGuide(selectedSkill, sectionVar)
+    private fun Player.openGuide(skill: Int) {
+        selectedSkill = skill
+        ifOpenOverlay(guide_interfaces.skill_guide_v2, eventBus)
     }
 
     private fun Player.closeGuide() {
-        ifCloseSub(guide_interfaces.skill_guide, eventBus)
+        ifCloseSub(guide_interfaces.skill_guide_v2, eventBus)
     }
 }
 
-private var Player.selectedSkill by intVarBit(guide_varbits.selected_skill)
-private var Player.selectedSubsection by intVarBit(guide_varbits.selected_subsection)
+private var Player.selectedSkill by intVarp(guide_varps.selected_skill)

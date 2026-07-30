@@ -1,3 +1,4 @@
+
 0	troll_freed_eadgar
 1	troll_opened_back_exit
 2	troll_entered_stronghold
@@ -12256,7 +12257,28 @@
 17866	slayer_blocked_duradel_diary
 17867	slayer_blocked_krystilia_diary
 17868	slayer_master_in_focus
-
+19104	sailing_player_is_on_player_boat
+19105	sailing_boat_facility_lockedin
+19118	sailing_preloaded_anims
+19121	sailing_boat_spawned
+19122	sailing_boarded_boat_world
+19129	sailing_boat_spawned_angle
+19136	sailing_boarded_boat
+19141	sailing_boat_spawned_finex
+19142	sailing_boat_spawned_finez
+19145	sailing_boarded_boat_last_dock
+19151	sailing_sidepanel_visible
+19153	sailing_sidepanel_visible_from_combat_tab
+19156	sailing_sidepanel_facility_hotspot0
+19174	sailing_sidepanel_sail_button_toggled
+19175	sailing_sidepanel_boat_move_mode
+19176	sailing_sidepanel_helm_status
+19177	sailing_sidepanel_boat_hp_max
+19181	sailing_sidepanel_boat_hp
+19205	sailing_sidepanel_player_at_helm
+19210	sailing_sidepanel_repairkits
+19233	sailing_sidepanel_player_role
+19235	sailing_sidepanel_players_on_board_total
 65476	music_last_id
 65477	music_curr_area
 65478	music_curr_id

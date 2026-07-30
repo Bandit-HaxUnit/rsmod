@@ -67,6 +67,8 @@ constructor(
     private val objRepo: ObjRepository,
     private val xteaMap: XteaMap,
 ) {
+    private var groupedFileLayout: MapGroupFileLayout? = null
+
     public fun decodeAll(): Unit =
         runBlocking(Dispatchers.IO) {
             val mapBuffers = gameCache.readMapBuffers(xteaMap)
@@ -80,16 +82,126 @@ constructor(
             cacheLocs(mapBuilder)
         }
 
-    private fun Cache.readMapBuffers(xteaMap: XteaMap): List<MapBuffer> =
-        xteaMap.map { (mapSquareKey, keyArray) ->
-            val name = "${mapSquareKey.x}_${mapSquareKey.z}"
-            val key = SymmetricKey.fromIntArray(keyArray)
-            val map = read(Js5Archives.MAPS, "m$name", file = 0).use(ByteBuf::toInlineBuf)
-            val locs = read(Js5Archives.MAPS, "l$name", file = 0, key).use(ByteBuf::toInlineBuf)
-            val npcs = readOrNull(Js5Archives.MAPS, "n$name")?.use(ByteBuf::toInlineBuf)
-            val objs = readOrNull(Js5Archives.MAPS, "o$name")?.use(ByteBuf::toInlineBuf)
-            val areas = readOrNull(Js5Archives.MAPS, "a$name")?.use(ByteBuf::toInlineBuf)
-            MapBuffer(mapSquareKey, map, locs, npcs, objs, areas)
+    private fun Cache.readMapBuffers(xteaMap: XteaMap): List<MapBuffer> {
+        if (xteaMap.isEmpty()) {
+            val layout = groupedFileLayout()
+            return enumerateMapSquareKeys(layout).mapNotNull { readNamedMapBuffer(it, layout) }
+        }
+        return xteaMap.keys.toList().map { readLegacyMapBuffer(it, xteaMap) }
+    }
+
+    private fun Cache.readLegacyMapBuffer(mapSquareKey: MapSquareKey, xteaMap: XteaMap): MapBuffer {
+        val name = "${mapSquareKey.x}_${mapSquareKey.z}"
+        val key =
+            xteaMap[mapSquareKey]?.let(SymmetricKey::fromIntArray) ?: SymmetricKey.ZERO
+        val map = read(Js5Archives.MAPS, "m$name", file = 0).use(ByteBuf::toInlineBuf)
+        val locs = read(Js5Archives.MAPS, "l$name", file = 0, key).use(ByteBuf::toInlineBuf)
+        val npcs = readOrNull(Js5Archives.MAPS, "n$name")?.use(ByteBuf::toInlineBuf)
+        val objs = readOrNull(Js5Archives.MAPS, "o$name")?.use(ByteBuf::toInlineBuf)
+        val areas = readOrNull(Js5Archives.MAPS, "a$name")?.use(ByteBuf::toInlineBuf)
+        return MapBuffer(mapSquareKey, map, locs, npcs, objs, areas)
+    }
+
+    private fun Cache.readNamedMapBuffer(
+        mapSquareKey: MapSquareKey,
+        layout: MapGroupFileLayout,
+    ): MapBuffer? {
+        val group = mapSquareKey.id
+        val map = readMapTileBuffer(group, layout.map) ?: return null
+        val rawLocs = readLayerBuffer(group, layout.loc, MapLocListDecoder::decode)
+        val locs = rawLocs ?: InlineByteBuf(ByteArray(0))
+        val npcs =
+            readGroupedOrLegacyLayerBuffer(
+                mapSquareKey,
+                layout.npc,
+                legacyPrefix = "n",
+                decode = MapNpcListDecoder::decode,
+            )
+        val objs =
+            readGroupedOrLegacyLayerBuffer(
+                mapSquareKey,
+                layout.obj,
+                legacyPrefix = "o",
+                decode = MapObjListDecoder::decode,
+            )
+        val areas =
+            readGroupedOrLegacyLayerBuffer(
+                mapSquareKey,
+                layout.area,
+                legacyPrefix = "a",
+                decode = MapAreaDecoder::decode,
+            )
+        return MapBuffer(mapSquareKey, map, locs, npcs, objs, areas)
+    }
+
+    private fun <T> Cache.readGroupedOrLegacyLayerBuffer(
+        mapSquareKey: MapSquareKey,
+        file: Int?,
+        legacyPrefix: String,
+        decode: (InlineByteBuf) -> T,
+    ): InlineByteBuf? {
+        if (file != null) {
+            readLayerBuffer(mapSquareKey.id, file, decode)?.let {
+                return it
+            }
+        }
+        return readLegacyLayerBuffer("$legacyPrefix${mapSquareKey.x}_${mapSquareKey.z}", decode)
+    }
+
+    private fun <T> Cache.readLegacyLayerBuffer(
+        group: String,
+        decode: (InlineByteBuf) -> T,
+    ): InlineByteBuf? {
+        val backing =
+            readOrNull(Js5Archives.MAPS, group)?.use { it.toInlineBuf().backing } ?: return null
+        if (!MapGroupFileLayoutDetector.decodes(backing, decode)) {
+            return null
+        }
+        return InlineByteBuf(backing)
+    }
+
+    private fun Cache.readMapTileBuffer(group: Int, preferredFile: Int): InlineByteBuf? {
+        readLayerBuffer(group, preferredFile, MapTileDecoder::decode)?.let {
+            return it
+        }
+        for (file in 0 until 5) {
+            if (file == preferredFile) {
+                continue
+            }
+            readLayerBuffer(group, file, MapTileDecoder::decode)?.let {
+                return it
+            }
+        }
+        return null
+    }
+
+    private fun <T> Cache.readLayerBuffer(
+        group: Int,
+        file: Int,
+        decode: (InlineByteBuf) -> T,
+    ): InlineByteBuf? {
+        val backing =
+            readOrNull(Js5Archives.MAPS, group, file)?.use { it.toInlineBuf().backing } ?: return null
+        if (!MapGroupFileLayoutDetector.decodes(backing, decode)) {
+            return null
+        }
+        return InlineByteBuf(backing)
+    }
+
+    private fun groupedFileLayout(): MapGroupFileLayout =
+        groupedFileLayout
+            ?: MapGroupFileLayoutDetector.detect(gameCache).also { groupedFileLayout = it }
+
+    private fun Cache.enumerateMapSquareKeys(layout: MapGroupFileLayout): List<MapSquareKey> =
+        buildList {
+            for (x in 0 until 256) {
+                for (z in 0 until 256) {
+                    val key = MapSquareKey(x, z)
+                    if (readMapTileBuffer(key.id, layout.map) != null) {
+                        add(key)
+                    }
+                }
+            }
         }
 
     private suspend fun decodeAll(buffers: List<MapBuffer>): List<DecodedMap> = coroutineScope {

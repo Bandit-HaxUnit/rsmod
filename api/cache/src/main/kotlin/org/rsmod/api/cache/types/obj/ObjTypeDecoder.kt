@@ -113,6 +113,56 @@ public object ObjTypeDecoder {
                         else -> throw NotImplementedError("Unhandled isubop parent op: $op")
                     }
                 }
+                44 -> model = data.readInt()
+                45 -> {
+                    manwear = data.readInt()
+                    manwearOff = data.readUnsignedByte().toInt()
+                }
+                46 -> manwear2 = data.readInt()
+                47 -> manwear3 = data.readInt()
+                48 -> {
+                    womanwear = data.readInt()
+                    womanwearOff = data.readUnsignedByte().toInt()
+                }
+                49 -> womanwear2 = data.readInt()
+                50 -> womanwear3 = data.readInt()
+                51 -> manhead = data.readInt()
+                52 -> manhead2 = data.readInt()
+                53 -> womanhead = data.readInt()
+                54 -> womanhead2 = data.readInt()
+                9 -> {
+                    // Unknown string field in newer cache revs.
+                    data.readString()
+                }
+                15 -> tradeable = false
+                160 -> {
+                    // Extended stackable mode (currently not modeled in `ObjType`).
+                }
+                200 -> {
+                    // Ground sub-op menu option (currently not modeled in `ObjType`).
+                    data.readUnsignedByte()
+                    data.readUnsignedByte()
+                    data.readString()
+                }
+                201 -> {
+                    // Conditional ground op menu option (currently not modeled in `ObjType`).
+                    data.readUnsignedByte()
+                    data.readUnsignedShort()
+                    data.readUnsignedShort()
+                    data.readInt()
+                    data.readInt()
+                    data.readString()
+                }
+                202 -> {
+                    // Conditional ground sub-op menu option (currently not modeled in `ObjType`).
+                    data.readUnsignedByte()
+                    data.readUnsignedShort()
+                    data.readUnsignedShort()
+                    data.readUnsignedShort()
+                    data.readInt()
+                    data.readInt()
+                    data.readString()
+                }
                 65 -> stockmarket = true
                 75 -> weight = data.readShort().toInt()
                 78 -> manwear3 = data.readUnsignedShort()

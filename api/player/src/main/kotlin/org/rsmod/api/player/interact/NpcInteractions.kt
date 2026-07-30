@@ -49,12 +49,25 @@ constructor(
         npc: Npc,
         op: InteractionOp,
         type: UnpackedNpcType = npc.visType,
+        subop: Int = 0,
     ): OpEvent? {
         val multiNpcType = multiNpc(type, player.vars)
         if (multiNpcType != null) {
-            val multiNpcTrigger = opTrigger(player, npc, op, multiNpcType)
+            val multiNpcTrigger = opTrigger(player, npc, op, multiNpcType, subop)
             if (multiNpcTrigger != null) {
                 return multiNpcTrigger
+            }
+        }
+
+        if (subop > 0) {
+            val subOpEvent = npc.toSubOp(op, subop)
+            if (eventBus.contains(subOpEvent::class.java, subOpEvent.id)) {
+                return subOpEvent
+            }
+
+            val contentSubOpEvent = npc.toContentSubOp(type.contentGroup, op, subop)
+            if (eventBus.contains(contentSubOpEvent::class.java, contentSubOpEvent.id)) {
+                return contentSubOpEvent
             }
         }
 
@@ -81,8 +94,12 @@ constructor(
         return null
     }
 
-    public fun hasOpTrigger(player: Player, npc: Npc, op: InteractionOp): Boolean =
-        opTrigger(player, npc, op) != null
+    public fun hasOpTrigger(
+        player: Player,
+        npc: Npc,
+        op: InteractionOp,
+        subop: Int = 0,
+    ): Boolean = opTrigger(player, npc, op, subop = subop) != null
 
     public fun apTrigger(
         player: Player,
@@ -146,6 +163,15 @@ constructor(
             InteractionOp.Op5 -> NpcEvents.Op5(this)
         }
 
+    private fun Npc.toSubOp(op: InteractionOp, subop: Int): NpcEvents.SubOp =
+        when (op) {
+            InteractionOp.Op1 -> NpcEvents.SubOp1(this, subop)
+            InteractionOp.Op2 -> NpcEvents.SubOp2(this, subop)
+            InteractionOp.Op3 -> NpcEvents.SubOp3(this, subop)
+            InteractionOp.Op4 -> NpcEvents.SubOp4(this, subop)
+            InteractionOp.Op5 -> NpcEvents.SubOp5(this, subop)
+        }
+
     private fun Npc.toContentOp(contentGroup: Int, op: InteractionOp): NpcContentEvents.Op =
         when (op) {
             InteractionOp.Op1 -> NpcContentEvents.Op1(this, contentGroup)
@@ -153,6 +179,19 @@ constructor(
             InteractionOp.Op3 -> NpcContentEvents.Op3(this, contentGroup)
             InteractionOp.Op4 -> NpcContentEvents.Op4(this, contentGroup)
             InteractionOp.Op5 -> NpcContentEvents.Op5(this, contentGroup)
+        }
+
+    private fun Npc.toContentSubOp(
+        contentGroup: Int,
+        op: InteractionOp,
+        subop: Int,
+    ): NpcContentEvents.SubOp =
+        when (op) {
+            InteractionOp.Op1 -> NpcContentEvents.SubOp1(this, contentGroup, subop)
+            InteractionOp.Op2 -> NpcContentEvents.SubOp2(this, contentGroup, subop)
+            InteractionOp.Op3 -> NpcContentEvents.SubOp3(this, contentGroup, subop)
+            InteractionOp.Op4 -> NpcContentEvents.SubOp4(this, contentGroup, subop)
+            InteractionOp.Op5 -> NpcContentEvents.SubOp5(this, contentGroup, subop)
         }
 
     private fun Npc.toUnimplementedOp(op: InteractionOp): NpcUnimplementedEvents.Op =

@@ -4,9 +4,11 @@ import jakarta.inject.Inject
 import net.rsprot.protocol.game.incoming.misc.user.MoveMinimapClick
 import org.rsmod.api.net.rsprot.player.modLevelTeleMoveSpeed
 import org.rsmod.api.net.rsprot.player.protectedTelejump
+import org.rsmod.api.player.events.PlayerMovementEvent
 import org.rsmod.api.player.output.clearMapFlag
 import org.rsmod.api.player.protect.clearPendingAction
 import org.rsmod.api.player.vars.ctrlMoveSpeed
+import org.rsmod.api.registry.worldentity.WorldEntityRegistry
 import org.rsmod.api.realm.Realm
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Player
@@ -21,10 +23,15 @@ constructor(
     private val realm: Realm,
     private val eventBus: EventBus,
     private val collision: CollisionFlagMap,
+    private val worldEntityReg: WorldEntityRegistry,
 ) : MessageHandler<MoveMinimapClick> {
     override fun handle(player: Player, message: MoveMinimapClick) {
         if (player.isDelayed) {
             player.clearMapFlag()
+            return
+        }
+        if (player.avatar.boatHelmHeadingMode) {
+            handleBoatHeadingClick(player, message.x, message.z)
             return
         }
         val dest = CoordGrid(message.x, message.z, player.level)
@@ -43,5 +50,16 @@ constructor(
             player.routeRequest = request
             player.tempMoveSpeed = speed
         }
+    }
+
+    private fun handleBoatHeadingClick(player: Player, x: Int, z: Int) {
+        if (worldEntityReg.findByOwner(player.slotId) == null) {
+            player.clearMapFlag()
+            return
+        }
+        val dest = CoordGrid(x, z, player.level)
+        player.clearPendingAction(eventBus)
+        player.clearMapFlag()
+        eventBus.publish(PlayerMovementEvent.BoatHeadingClick(player, dest))
     }
 }

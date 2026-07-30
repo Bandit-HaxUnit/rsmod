@@ -10,7 +10,7 @@ object BaseInvs : InvReferences() {
     val tradeoffer = find("tradeoffer", 850951859)
     val inv = find("inv", 850981630)
     val worn = find("worn", 847803897)
-    val bank = find("bank", 1135478129)
+    val bank = find("bank", 1178604519)
 
     val generalshop1 = find("generalshop1", 62547837000)
 }
